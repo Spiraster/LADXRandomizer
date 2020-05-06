@@ -9,46 +9,63 @@ namespace LADXRandomizer
     {
         private static readonly string start = "OW2-A2";
 
-        public static List<Warp> Map(WarpData warpData)
+        public static List<WarpData> Map(WarpList warpList)
         {
-            var inventory = new FlagsCollection(new Enum[] { Items.All, Keys.All, Instruments.All, Songs.All, Dungeons.All, Zones.All, MiscFlags.All });
-            var encounteredWarps = new List<Warp>();
+            var inventory = new FlagsCollection(new Enum[] { Items.AllItems, Keys.AllKeys, Instruments.AllInstruments, Songs.AllSongs, Dungeons.AllDungeons, Zones.AllZones, MiscFlags.AllMisc });
+            var encounteredWarps = new List<WarpData>();
             var encounteredConstraints = new List<Enum>();
 
-            TrySolve(warpData, ref inventory, out encounteredWarps, out encounteredConstraints);
+            TrySolve(warpList, ref inventory, out encounteredWarps, out encounteredConstraints, out string output);
 
             return encounteredWarps;
         }
 
-        public static bool TrySolve(WarpData warpData, ref FlagsCollection inventory, out List<Warp> encounteredWarps, out List<Enum> encounteredConstraints)
+        public static bool TrySolve(WarpList warpList, ref FlagsCollection inventory, out List<WarpData> encounteredWarps, out List<Enum> encounteredConstraints, out string output)
         {
-            //inventory = new FlagsCollection(new Enum[] { Items.Shield | Items.Sword });
-            encounteredWarps = new List<Warp>();
+            encounteredWarps = new List<WarpData>();
             var encounteredZones = new List<int>();
             encounteredConstraints = new List<Enum>();
 
-            var inventory_old = new FlagsCollection();
-            var oldWarpCount = 0;
-            var oldZoneCount = 0;
-            var oldConstraintCount = 0;
+            var oldInventory = new FlagsCollection();
+            int oldWarpCount = 0;
+            int oldZoneCount = 0;
+            int oldConstraintCount = 0;
+            var oldEncounteredWarps = new List<WarpData>();
 
-            while (!inventory.Equals(inventory_old)
+            int count = 0;
+            var sb = new StringBuilder();
+
+            while (!inventory.Equals(oldInventory)
                    || encounteredWarps.Count != oldWarpCount
                    || encounteredZones.Count != oldZoneCount
                    || encounteredConstraints.Count != oldConstraintCount) //while incremental progress is being made...
             {
+                //update output log
+                if (count > 0)
+                {
+                    sb.AppendLine("\r\n\r\n" + count.ToString() + "\r\n");
+                    sb.AppendLine("INVENTORY:");
+                    foreach (var item in inventory.ToEnumList().Except(oldInventory.ToEnumList()))
+                        sb.Append(item.ToString() + ", ");
+                    sb.AppendLine("\r\nWARPS:");
+                    foreach (var warp in encounteredWarps.Except(oldEncounteredWarps))
+                        sb.Append(warp.Code + ", ");
+                }
+
                 //save values from last iteration
-                inventory_old = new FlagsCollection(inventory.ToEnumList().ToArray());
+                oldInventory = new FlagsCollection(inventory.ToEnumList().ToArray());
                 oldWarpCount = encounteredWarps.Count;
                 oldZoneCount = encounteredZones.Count;
                 oldConstraintCount = encounteredConstraints.Count;
+                oldEncounteredWarps = new List<WarpData>(encounteredWarps);
 
                 //clear lists before next iteration
                 encounteredWarps.Clear();
                 encounteredZones.Clear();
                 encounteredConstraints.Clear();
                 
-                FollowWarp(warpData, warpData[start], ref inventory, ref encounteredWarps, ref encounteredZones, ref encounteredConstraints);
+                //pathfind
+                FollowWarp(warpList, warpList[start], ref inventory, ref encounteredWarps, ref encounteredZones, ref encounteredConstraints);
 
                 //remove duplicates from list
                 encounteredWarps = encounteredWarps.Distinct().ToList();
@@ -60,12 +77,16 @@ namespace LADXRandomizer
                     if (inventory.Contains(constraint) || !(constraint is Items))
                         encounteredConstraints.Remove(constraint);
                 }
+
+                count++;
             }
+
+            output = sb.ToString();
 
             return inventory.Contains(Dungeons.Egg) && (inventory.Contains(Items.Mushroom) || inventory.Contains(Items.Powder)) && inventory.Contains(Items.Bow | Items.Sword);
         }
 
-        private static void FollowWarp(WarpData warpData, Warp origin, ref FlagsCollection inventory, ref List<Warp> encounteredWarps, ref List<int> encounteredZones, ref List<Enum> encounteredConstraints)
+        private static void FollowWarp(WarpList warpList, WarpData origin, ref FlagsCollection inventory, ref List<WarpData> encounteredWarps, ref List<int> encounteredZones, ref List<Enum> encounteredConstraints)
         {
             if (encounteredWarps.Contains(origin))
                 return;
@@ -82,19 +103,19 @@ namespace LADXRandomizer
             //continue following any connected warps, if possible
             foreach (var connection in current.WarpConnections.Outward)
                 if (inventory.Contains(connection.Constraints.ToEnumList()))
-                    FollowWarp(warpData, warpData[connection.Code], ref inventory, ref encounteredWarps, ref encounteredZones, ref encounteredConstraints);
+                    FollowWarp(warpList, warpList[connection.Code], ref inventory, ref encounteredWarps, ref encounteredZones, ref encounteredConstraints);
                 else
                     encounteredConstraints.AddRange(connection.Constraints.ToEnumList());
 
             //explore any connected zones, if possible
             foreach (var zoneConnection in current.ZoneConnections.Outward)
                 if (inventory.Contains(zoneConnection.Constraints.ToEnumList()))
-                    FollowZone(warpData, zoneConnection.Zone, ref inventory, ref encounteredWarps, ref encounteredZones, ref encounteredConstraints);
+                    FollowZone(warpList, zoneConnection.Zone, ref inventory, ref encounteredWarps, ref encounteredZones, ref encounteredConstraints);
                 else
                     encounteredConstraints.AddRange(zoneConnection.Constraints.ToEnumList());
         }
 
-        private static void FollowZone(WarpData warpData, int zone, ref FlagsCollection inventory, ref List<Warp> encounteredWarps, ref List<int> encounteredZones, ref List<Enum> encounteredConstraints)
+        private static void FollowZone(WarpList warpList, int zone, ref FlagsCollection inventory, ref List<WarpData> encounteredWarps, ref List<int> encounteredZones, ref List<Enum> encounteredConstraints)
         {
             if (encounteredZones.Contains(zone))
                 return;
@@ -105,22 +126,22 @@ namespace LADXRandomizer
             UpdateInventory(zone, ref inventory);
 
             //follow warps within this zone, if possible
-            foreach (var warp in warpData.Overworld1.Where(x => x.ZoneConnections.Inward.Exists(y => y.Zone == zone)))
+            foreach (var warp in warpList.Overworld1.Where(x => x.ZoneConnections.Inward.Exists(y => y.Zone == zone)))
                 foreach (var zoneConnection in warp.ZoneConnections.Inward.Where(x => x.Zone == zone)) //there could be multiple connections between the same warp and zone
                     if (inventory.Contains(zoneConnection.Constraints.ToEnumList()))
-                        FollowWarp(warpData, warp, ref inventory, ref encounteredWarps, ref encounteredZones, ref encounteredConstraints);
+                        FollowWarp(warpList, warp, ref inventory, ref encounteredWarps, ref encounteredZones, ref encounteredConstraints);
                     else
                         encounteredConstraints.AddRange(zoneConnection.Constraints.ToEnumList());
 
             //continue into any zones that connect to this one
-            foreach (var zoneConnection in warpData.ZoneData[zone])
+            foreach (var zoneConnection in warpList.ZoneList[zone].ZoneConnections)
                 if (inventory.Contains(zoneConnection.Constraints.ToEnumList()))
-                    FollowZone(warpData, zoneConnection.Zone, ref inventory, ref encounteredWarps, ref encounteredZones, ref encounteredConstraints);
+                    FollowZone(warpList, zoneConnection.Zone, ref inventory, ref encounteredWarps, ref encounteredZones, ref encounteredConstraints);
                 else
                     encounteredConstraints.AddRange(zoneConnection.Constraints.ToEnumList());
         }
 
-        private static void UpdateInventory(Warp current, ref FlagsCollection inventory)
+        private static void UpdateInventory(WarpData current, ref FlagsCollection inventory)
         {
             //---------------
             //warp checks
@@ -146,8 +167,13 @@ namespace LADXRandomizer
             }
             else if (current.Code == "OW2-83") //dream shrine
             {
-                if (inventory.Contains(Items.Feather) || inventory.Contains(Items.Boots | Items.Sword))
+                if (inventory.Contains(Items.Boots | Items.Sword))
                     inventory.Add(Items.Ocarina);
+            }
+            else if (current.Code == "OW1-C6") //villa cave exit
+            {
+                if (inventory.Contains(Items.Shovel) && (inventory.Contains(Items.Sword) || inventory.Contains(Items.MagicRod)))
+                    inventory.Add(Keys.SlimeKey);
             }
             else if (current.Code == "OW1-CF") // desert cave (checked in case of bombless access)
             {
@@ -161,7 +187,7 @@ namespace LADXRandomizer
             }
             else if (current.Code == "OW2-0A-3") //bird key cave
             {
-                if (inventory.Contains(MiscFlags.Rooster) || inventory.Contains(Items.Boots | Items.Feather | Items.Hookshot) || inventory.Contains(Items.Boots | Items.Feather | Items.Shovel))
+                if (inventory.Contains(MiscFlags.Rooster))
                     inventory.Add(Keys.BirdKey);
             }
             else if (current.Code == "OW2-D4") //Mamu's cave
@@ -215,7 +241,7 @@ namespace LADXRandomizer
                 inventory.Add(Dungeons.D3);
                 if (inventory.Contains(Items.Bracelet))
                 {
-                    if (inventory.ContainsAnyDamageItem && (inventory.Contains(Items.Bombs) || inventory.Contains(Items.Sword | Items.Feather)))
+                    if (inventory.ContainsAnyDamageItem && inventory.Contains(Items.Bombs))
                         inventory.Add(Items.Boots);
                     if (inventory.Contains(Items.Feather | Items.Boots | Items.Sword))
                         inventory.Add(Instruments.SeaLilysBell);
@@ -224,7 +250,7 @@ namespace LADXRandomizer
             else if (current.Code == "OW2-2B-1") //D4
             {
                 inventory.Add(Dungeons.D4);
-                if (inventory.Contains(Items.Boots | Items.Feather) && (inventory.ContainsAnyDamageItem || inventory.Contains(Items.Bombs | Items.Sword)))
+                if (inventory.Contains(Items.Boots | Items.Feather | Items.Bombs | Items.Sword))
                     inventory.Add(Items.Flippers);
                 if (inventory.Contains(Items.Boots | Items.Feather | Items.Flippers) && (inventory.Contains(Items.Sword) || inventory.Contains(Items.Bow)))
                     inventory.Add(Instruments.SurfHarp);
@@ -246,7 +272,7 @@ namespace LADXRandomizer
                         inventory.Add(Items.Bracelet);
                         inventory.BraceletLocation = BraceletLocation.D6;
                     }
-                if (inventory.Contains(Items.L2Bracelet | Items.Bombs | Items.Feather) && (inventory.Contains(Items.Sword) || inventory.Contains(Items.Hookshot)))
+                if (inventory.Contains(Items.L2Bracelet | Items.Bombs | Items.Feather | Items.Hookshot))
                     inventory.Add(Instruments.CoralTriangle);
             }
             //else if (current.Code == "OW2-6C") //D6b (stairs)
@@ -256,20 +282,21 @@ namespace LADXRandomizer
             else if (current.Code == "OW2-0E") //D7
             {
                 inventory.Add(Dungeons.D7);
-                //old route: damage item, bracelet, feather, bombs, hookshot
-                if (inventory.Contains(Items.Feather | Items.Bombs) && (inventory.Contains(Items.Sword) || inventory.Contains(Items.Bracelet | Items.Hookshot)))
-                    inventory.Add(Instruments.OrganOfEveningCalm);
+                if (inventory.Contains(Items.Bracelet))
+                {
+                    if (inventory.ContainsAnyDamageItem && inventory.Contains(Items.Shield))
+                        inventory.Add(Items.L2Shield);
+                    if (inventory.Contains(Items.Feather | Items.Bombs | Items.Hookshot | Items.L2Shield))
+                        inventory.Add(Instruments.OrganOfEveningCalm);
+                }
             }
             else if (current.Code == "OW2-10") //D8a (entrance)
             {
                 inventory.Add(Dungeons.D8);
-                if (inventory.Contains(Items.Sword | Items.Feather))
-                {
-                    if (inventory.Contains(Items.Bombs | Items.Bow))
-                        inventory.Add(Items.MagicRod);
-                    if (inventory.Contains(Items.MagicRod))
-                        inventory.Add(Instruments.ThunderDrum);
-                }
+                if (inventory.Contains(Items.Sword | Items.Feather | Items.Bombs | Items.Bow | Items.Hookshot))
+                    inventory.Add(Items.MagicRod);
+                if (inventory.Contains(Items.Feather | Items.MagicRod) && (inventory.Contains(Items.Bracelet) || inventory.Contains(Items.Bow | Items.Bombs)))
+                    inventory.Add(Instruments.ThunderDrum);
             }
             //else if (current.Code == "OW2-00") //D8b (stairs [00])
             //{
@@ -298,11 +325,11 @@ namespace LADXRandomizer
                 if (inventory.Contains(Items.Feather))
                     inventory.Add(Items.Mushroom);
             }
-            else if (zone == 4)
-            {
-                if (inventory.Contains(Items.Shovel))
-                    inventory.Add(Keys.SlimeKey);
-            }
+            //else if (zone == 4)
+            //{
+            //    if (inventory.Contains(Items.Shovel))
+            //        inventory.Add(Keys.SlimeKey);
+            //}
             else if (zone == 6)
             {
                 if (inventory.Contains(Items.Bombs) && inventory.ContainsAnyDamageItem)
@@ -330,11 +357,10 @@ namespace LADXRandomizer
         public BraceletLocation BraceletLocation { get; set; }
 
         public bool ContainsAnyDamageItem => this.Contains(Items.Sword) || this.Contains(Items.Bow) || this.Contains(Items.Hookshot) || this.Contains(Items.MagicRod);
-        public bool IsEmpty => this.ToStringList().Count == 0;
         
         public FlagsCollection() { }
 
-        public FlagsCollection(Enum[] flags)
+        public FlagsCollection(IEnumerable<Enum> flags)
         {
             foreach (var flag in flags)
             {
@@ -513,15 +539,6 @@ namespace LADXRandomizer
         }
         #endregion
 
-        //public bool ContainsAnyOf(params Enum[] flags)
-        //{
-        //    foreach (var flag in flags)
-        //        if (this.Contains(flag))
-        //            return true;
-
-        //    return false;
-        //}
-
         public List<Enum> ToEnumList()
         {
             var list = new List<Enum>();
@@ -636,10 +653,10 @@ namespace LADXRandomizer
         Flippers    = 0x800,
         Hookshot    = 0x1000,
         L2Bracelet  = 0x2000,
-        //L2Shield    = 0x4000,
+        L2Shield    = 0x4000,
         MagicRod    = 0x8000,
         //Boomerang   = 0x10000,
-        All         = 0xBFFF
+        AllItems    = 0xFFFF
     }
 
     [Flags]
@@ -651,7 +668,7 @@ namespace LADXRandomizer
         AnglerKey   = 0x4,
         FaceKey     = 0x8,
         BirdKey     = 0x10,
-        All         = 0x1F
+        AllKeys     = 0x1F
     }
 
     [Flags]
@@ -666,60 +683,60 @@ namespace LADXRandomizer
         CoralTriangle       = 0x20,
         OrganOfEveningCalm  = 0x40,
         ThunderDrum         = 0x80,
-        All                 = 0xFF
+        AllInstruments      = 0xFF
     }
 
     [Flags]
     public enum Songs
     {
         None,
-        Song1 = 0x1,
-        Song2 = 0x2,
-        Song3 = 0x4,
-        All   = 0x7
+        Song1    = 0x1,
+        Song2    = 0x2,
+        Song3    = 0x4,
+        AllSongs = 0x7
     }
 
     [Flags]
     public enum Dungeons
     {
         None,
-        D1  = 0x1,
-        D2  = 0x2,
-        D3  = 0x4,
-        D4  = 0x8,
-        D5  = 0x10,
-        D6  = 0x20,
-        D7  = 0x40,
-        D8  = 0x80,
-        Egg = 0x100,
-        All = 0x1FF
+        D1          = 0x1,
+        D2          = 0x2,
+        D3          = 0x4,
+        D4          = 0x8,
+        D5          = 0x10,
+        D6          = 0x20,
+        D7          = 0x40,
+        D8          = 0x80,
+        Egg         = 0x100,
+        AllDungeons = 0x1FF
     }
 
     [Flags]
     public enum Zones
     {
         None,
-        Zone1  = 0x1,
-        Zone2  = 0x2,
-        Zone3  = 0x4,
-        Zone4  = 0x8,
-        Zone5  = 0x10,
-        Zone6  = 0x20,
-        Zone7  = 0x40,
-        Zone8  = 0x80,
-        Zone9  = 0x100,
-        Zone10 = 0x200,
-        Zone11 = 0x400,
-        Zone12 = 0x800,
-        Zone13 = 0x1000,
-        Zone14 = 0x2000,
-        Zone15 = 0x4000,
-        Zone16 = 0x8000,
-        Zone17 = 0x10000,
-        Zone18 = 0x20000,
-        Zone19 = 0x40000,
-        Zone20 = 0x80000,
-        All    = 0xFFFFF
+        Zone1    = 0x1,
+        Zone2    = 0x2,
+        Zone3    = 0x4,
+        Zone4    = 0x8,
+        Zone5    = 0x10,
+        Zone6    = 0x20,
+        Zone7    = 0x40,
+        Zone8    = 0x80,
+        Zone9    = 0x100,
+        Zone10   = 0x200,
+        Zone11   = 0x400,
+        Zone12   = 0x800,
+        Zone13   = 0x1000,
+        Zone14   = 0x2000,
+        Zone15   = 0x4000,
+        Zone16   = 0x8000,
+        Zone17   = 0x10000,
+        Zone18   = 0x20000,
+        Zone19   = 0x40000,
+        Zone20   = 0x80000,
+        AllZones = 0xFFFFF
     }
 
     [Flags]
@@ -729,8 +746,10 @@ namespace LADXRandomizer
         BowWow        = 0x1,
         Rooster       = 0x2,
         KanaletSwitch = 0x4,
-        Waterfall     = 0x8,
-        All           = 0xF
+        GoldenLeaves  = 0x8,
+        Waterfall     = 0x10,
+        MermaidScale  = 0x20,
+        AllMisc       = 0x3F
     }
     
     public enum BraceletLocation

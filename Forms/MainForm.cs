@@ -37,7 +37,7 @@ namespace LADXRandomizer
 
         private void CreateRom(int mask)
         {
-            log = new RandomizerLog(debug);
+            log = new RandomizerLog();
             log.UpdateLog += log_onUpdateLog;
 
             //var settings = new RandomizerSettings(mask);
@@ -46,10 +46,9 @@ namespace LADXRandomizer
             var seed = Randomizer.GetSeed(txt_Seed.Text);
             var rng = new MT19937(seed);
 
-            log.Write(LogMode.Info, "Seed: " + seed.ToString("X8"));
-
-            var mapEdits = Randomizer.GenerateMapEdits(rng);
-            (var warpData, var success) = Randomizer.GenerateData(rng, mapEdits, settings, log);
+            log.Write(LogMode.Output, "Seed: " + seed.ToString("X8"));
+            
+            (var warpList, var success) = Randomizer.GenerateData(rng, settings, log);
 
             //stopwatch.Restart();
             //randomizer.GenerateData();
@@ -58,7 +57,20 @@ namespace LADXRandomizer
 
             log.LogSettings(settings);
 
-            foreach (var warp1 in warpData.Overworld1)
+            foreach (var warp1 in warpList.Overworld1)
+            {
+                var warp2 = warp1.GetDestinationWarp();
+
+                string text1 = "[" + warp1.Code + "] " + warp1.Description;
+
+                string text2 = "";
+                if (warp2 != null)
+                    text2 = "[" + warp2.Code + "] " + warp2.Description;
+
+                log.Write(LogMode.Spoiler, text1 + "\r\n    ^=> " + text2 + "\r\n");
+            }
+
+            foreach (var warp1 in warpList.Overworld2) //temp
             {
                 var warp2 = warp1.GetDestinationWarp();
 
@@ -73,27 +85,27 @@ namespace LADXRandomizer
 
             filename = "[V" + version.ToString(1) + "] - " + seed.ToString("X8");
 
-            RandomizerIO.WriteRom(warpData, mapEdits, seed, settings, filename);
+            RandomizerIO.WriteRom(warpList, seed, settings, filename);
         }
 
         private void BatchTest()
         {
-            if (!int.TryParse(txt_BatchNum.Text, out int tests))
-                return;
+            //if (!int.TryParse(txt_BatchNum.Text, out int tests))
+            //    return;
 
-            var successRate = 0;
-            var sw = new Stopwatch();
-            sw.Restart();
-            for (int i = 0; i < tests; i++)
-            {
-                var rng = new MT19937(Randomizer.GetSeed(""));
-                (var warpData, var success) = Randomizer.GenerateData(rng, Randomizer.GenerateMapEdits(rng), new RandomizerSettings(385), new RandomizerLog(debug));
-                if (success)
-                    successRate++;
-            }
-            sw.Stop();
+            //var successRate = 0;
+            //var sw = new Stopwatch();
+            //sw.Restart();
+            //for (int i = 0; i < tests; i++)
+            //{
+            //    var rng = new MT19937(Randomizer.GetSeed(""));
+            //    (var warpData, var success) = Randomizer.GenerateData(rng, Randomizer.GenerateMapEdits(rng), new RandomizerSettings(385), new RandomizerLog(debug));
+            //    if (success)
+            //        successRate++;
+            //}
+            //sw.Stop();
 
-            MessageBox.Show("Average Time: " + (sw.ElapsedMilliseconds * (1.0 / tests)).ToString() + " ms\n" + "Success Rate: " + (successRate * 1.0 / tests).ToString("p"));
+            //MessageBox.Show("Average Time: " + (sw.ElapsedMilliseconds * (1.0 / tests)).ToString() + " ms\n" + "Success Rate: " + (successRate * 1.0 / tests).ToString("p"));
         }
 
         //event methods//
@@ -128,8 +140,8 @@ namespace LADXRandomizer
             if (chk_FullLog.Checked)
                 txt_Log.Text = log.FullLog;
 
-            txt_Log.SelectionStart = 0;
-            txt_Log.ScrollToCaret();
+            //txt_Log.SelectionStart = 0;
+            //txt_Log.ScrollToCaret();
 
             btn_Create.Enabled = true;
             btn_SaveLog.Enabled = true;
@@ -164,11 +176,6 @@ namespace LADXRandomizer
                 btn_Settings.Enabled = true;
             else
                 btn_Settings.Enabled = false;
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            
         }
     }
 

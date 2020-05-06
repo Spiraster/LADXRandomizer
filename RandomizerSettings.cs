@@ -22,14 +22,23 @@ namespace LADXRandomizer
             AddRange(new List<Setting>
             {
                 new Setting { Name = "SelectedROM", Type = typeof(ComboBox) },
-                new Setting { Name = "CheckSolvability" },
-                new Setting { Name = "PairWarps" },
-                new Setting { Name = "PreventInaccessible" },
-                new Setting { Name = "PreventDefaultWarps" },
                 new Setting { Name = "ExcludeMarinHouse" },
                 new Setting { Name = "ExcludeEgg" },
+                
+                new Setting { Name = "PatchWarpSaving", Enabled = true },
+                new Setting { Name = "PatchSignpostMaze", Enabled = true },
+                new Setting { Name = "PatchEggMaze", Enabled = false },
+                new Setting { Name = "PatchGhost", Enabled = true },
+                new Setting { Name = "PatchSlimeKey", Enabled = true },
+                new Setting { Name = "DisableBowwowKids", Enabled = true },
+                new Setting { Name = "DisableBirdKeyPits" },
+                new Setting { Name = "DisableLanmolasPit" },
+                new Setting { Name = "CoverD7Pit", Enabled = true },
+                new Setting { Name = "RemoveHouseMarin", Enabled = false },
+                new Setting { Name = "RemoveOwls", Enabled = true },
+                new Setting { Name = "SafetyWarp", Enabled = true },
 
-                new Setting { Name = "CoverPitWarp", ShowInLog = false, Enabled = true },
+                new Setting { Name = "RandomizeWarps", ShowInLog = false, Enabled = true },
                 new Setting { Name = "DebugMode", ShowInLog = false, Enabled = false },
             });
 

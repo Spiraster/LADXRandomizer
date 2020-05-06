@@ -5,7 +5,6 @@ namespace LADXRandomizer
 {
     public class RandomizerLog
     {
-        private bool debug;
         private string info;
         private string settings;
         private string spoiler;
@@ -16,12 +15,9 @@ namespace LADXRandomizer
 
         public event EventHandler<LogArgs> UpdateLog;
 
-        public RandomizerLog(bool debug = false)
-        {
-            this.debug = debug;
-        }
+        public RandomizerLog() { }
 
-        public void Write(LogMode mode, params string[] messages)
+        public void Write(LogMode logMode, params string[] messages)
         {
             var sb = new StringBuilder();
             bool clear = false;
@@ -38,19 +34,14 @@ namespace LADXRandomizer
                     sb.AppendLine(message);
             }
 
-            if (mode == LogMode.Info)
+            if (logMode == LogMode.Output)
             {
                 info += sb.ToString();
                 UpdateLog?.Invoke(this, new LogArgs(sb.ToString(), clear));
             }
-            else if (mode == LogMode.Debug && debug)
-            {
-                info += sb.ToString();
-                UpdateLog?.Invoke(this, new LogArgs(sb.ToString(), clear));
-            }
-            else if (mode == LogMode.Settings)
+            else if (logMode == LogMode.Settings)
                 settings += sb.ToString();
-            else if (mode == LogMode.Spoiler)
+            else if (logMode == LogMode.Spoiler)
                 spoiler += sb.ToString();
         }
 
@@ -60,7 +51,7 @@ namespace LADXRandomizer
             Write(LogMode.Settings, options["SelectedROM"].Name + " = " + (Rom)options["SelectedROM"].Index);
             foreach (var option in options)
             {
-                if (!option.ShowInLog && !debug)
+                if (!option.ShowInLog)
                     continue;
                 else if (option.Type == typeof(bool))
                     Write(LogMode.Settings, option.Name + " = " + option.Enabled.ToString().ToUpper());
@@ -82,9 +73,8 @@ namespace LADXRandomizer
 
     public enum LogMode
     {
-        Info,
+        Output,
         Settings,
         Spoiler,
-        Debug,
     }
 }

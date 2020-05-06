@@ -19,126 +19,156 @@ namespace LADXRandomizer
             ("OW2-2B-1", Items.Flippers),   //D4
             ("OW2-D9-1", Items.Hookshot),   //D5
             ("OW2-8C", Items.L2Bracelet),   //D6
+            ("OW2-0E", Items.L2Shield),     //D7
             ("OW2-10", Items.MagicRod),     //D8
-            ("OW2-65", Items.Powder),       //Witch's Hut
+            ("OW2-65", Items.Powder),       //Witch's hut
             ("OW2-B3", Items.Powder),       //Trendy
             ("OW2-93", Items.Shovel),       //Shop
             ("OW2-93", Items.Bombs),        //Shop
             ("OW2-93", Items.Bow),          //Shop
+            ("OW2-AC", Keys.FaceKey),       //Armos
+            ("OW2-0A-2", Keys.BirdKey),     //Bird key cave
         }.AsReadOnly();
 
-        public static (WarpData, bool) GenerateData(MT19937 rng, int[] mapEdits, RandomizerSettings settings, RandomizerLog log)
+        public static (WarpList, bool) GenerateData(MT19937 rng, RandomizerSettings settings, RandomizerLog log)
         {
-            var warpData = new WarpData(mapEdits, settings);
+            var warpList = new WarpList(settings);
 
             //-- take care of special cases first (D6, D7, D8) --//
-            //D8
-            var warpD8b = new Warp();
-            var warpD8c = new Warp();
-            if (rng.Next() % 2 == 0)
-            {
-                warpD8b = warpData.Where(x => x.Code.Contains("OW1") && x.DeadEnd && !x.Exclude).Random(rng);
-                warpD8c = warpData.Where(x => x.Code.Contains("OW1") && x.DeadEnd && !x.Exclude && x != warpD8b).Random(rng);
-            }
-            else
-            {
-                warpD8b = warpData.Where(x => x.Code.Contains("OW1") && x.ZoneConnections.Outward.Count == 0 && x.WarpConnections.Inward.Count == 1 && x.WarpConnections.Outward.Count == 1 && !x.Exclude).Random(rng);
-                warpD8c = warpData[warpD8b.WarpConnections.Outward.First().Code];
-            }
+            ////D8
+            //var warpD8b = new Warp();
+            //var warpD8c = new Warp();
+            //if (rng.Next() % 2 == 0)
+            //{
+            //    warpD8b = warpData.Where(x => x.Code.Contains("OW1") && x.DeadEnd && !x.Exclude).Random(rng);
+            //    warpD8c = warpData.Where(x => x.Code.Contains("OW1") && x.DeadEnd && !x.Exclude && x != warpD8b).Random(rng);
+            //}
+            //else
+            //{
+            //    warpD8b = warpData.Where(x => x.Code.Contains("OW1") && x.ZoneConnections.Inward.Count == 0 && x.WarpConnections.Inward.Count == 1 && x.WarpConnections.Outward.Count == 1 && !x.Exclude).Random(rng);
+            //    warpD8c = warpData[warpD8b.WarpConnections.Outward.First().Code];
+            //}
 
-            warpData["OW2-00"].WarpValue = warpD8b.LocationValue;
-            warpData["OW2-02"].WarpValue = warpD8c.LocationValue;
-            warpD8b.WarpValue = warpData["OW2-00"].LocationValue;
-            warpD8c.WarpValue = warpData["OW2-02"].LocationValue;
+            //warpData["OW2-00"].WarpValue = warpD8b.LocationValue;
+            //warpData["OW2-02"].WarpValue = warpD8c.LocationValue;
+            //warpD8b.WarpValue = warpData["OW2-00"].LocationValue;
+            //warpD8c.WarpValue = warpData["OW2-02"].LocationValue;
 
-            warpData["OW2-00"].Exclude = true;
-            warpData["OW2-02"].Exclude = true;
-            warpD8b.Exclude = true;
-            warpD8c.Exclude = true;
+            //warpData["OW2-00"].Exclude = true;
+            //warpData["OW2-02"].Exclude = true;
+            //warpD8b.Exclude = true;
+            //warpD8c.Exclude = true;
 
-            //D6
-            var warpD6b = warpData.Where(x => x.Code.Contains("OW1") && x.DeadEnd && !x.Exclude).Random(rng);
+            ////D6
+            //var warpD6b = warpData.Where(x => x.Code.Contains("OW1") && x.DeadEnd && !x.Exclude).Random(rng);
 
-            warpData["OW2-6C"].WarpValue = warpD6b.LocationValue;
-            warpD6b.WarpValue = warpData["OW2-6C"].LocationValue;
+            //warpData["OW2-6C"].WarpValue = warpD6b.LocationValue;
+            //warpD6b.WarpValue = warpData["OW2-6C"].LocationValue;
 
-            warpData["OW2-6C"].Exclude = true;
-            warpD6b.Exclude = true;
+            //warpData["OW2-6C"].Exclude = true;
+            //warpD6b.Exclude = true;
 
-            ////D7
-            //var warpD7 = warpData.Where(x => x.Code.Contains("OW2") && x.DeadEnd && !x.Exclude).Random(rng);
+            //D7
+            var warpD7 = warpList.Where(x => x.Code.Contains("OW2") && x.DeadEnd && !x.Exclude).Random(rng);
 
-            //warpData["OW1-0E"].WarpValue = warpD7.LocationValue;
-            //warpD7.WarpValue = warpData["OW1-0E"].LocationValue;
+            warpList["OW1-0E"].WarpValue = warpD7.LocationValue;
+            warpD7.WarpValue = warpList["OW1-0E"].LocationValue;
 
-            //warpData["OW1-0E"].Exclude = true;
-            //warpD7.Exclude = true;
-
-            //locked dungeon entrances
-            foreach (var warp1 in warpData.Where(x => x.Locked && !x.Exclude))
-            {
-                var warp2 = warpData.Where(x => x.Code.Contains("OW2") && x.DeadEnd && !x.Exclude).Random(rng);
-
-                warp1.WarpValue = warp2.LocationValue;
-                warp2.WarpValue = warp1.LocationValue;
-
-                warp1.Exclude = true;
-                warp2.Exclude = true;
-            }
+            warpList["OW1-0E"].Exclude = true;
+            warpD7.Exclude = true;
             //-------------------------------------------------------//
 
             //-- initial shuffling and pairing of warps --//
-            var ow1Warps = warpData.Where(x => x.Code.Contains("OW1") && x.WarpValue == 0).OrderBy(x => rng.Next()).ToList();
-            var ow2Warps = warpData.Where(x => x.Code.Contains("OW2") && x.WarpValue == 0).OrderBy(x => rng.Next()).ToList();
-
-            for (int i = 0; i < ow1Warps.Count; i++)
+            if (settings["RandomizeWarps"].Enabled)
             {
-                ow1Warps[i].WarpValue = ow2Warps[i].LocationValue;
-                ow2Warps[i].WarpValue = ow1Warps[i].LocationValue;
+                var ow1Warps = warpList.Where(x => x.Code.Contains("OW1") && !x.Exclude).OrderBy(x => rng.Next()).ToList();
+                var ow2Warps = warpList.Where(x => x.Code.Contains("OW2") && !x.Exclude).OrderBy(x => rng.Next()).ToList();
+
+                for (int i = 0; i < ow1Warps.Count; i++)
+                {
+                    ow1Warps[i].WarpValue = ow2Warps[i].LocationValue;
+                    ow2Warps[i].WarpValue = ow1Warps[i].LocationValue;
+                }
             }
+            else
+                warpList.ForEach(x => x.WarpValue = x.DefaultWarpValue);
             //--------------------------------------------//
 
-            //-- make sure all warps are reachable --//
-            var reachableWarps = Pathfinding.Map(warpData);
-            while (reachableWarps.Count < warpData.Count)
-            {
-                var unreachableWarps = warpData.Where(x => !reachableWarps.Contains(x) && !x.Exclude).ToList();
-
-                var warp1 = unreachableWarps.Random(rng);
-                var warp2 = new Warp();
-
-                if (warp1.Code.Contains("OW1"))
-                    warp2 = reachableWarps.Where(x => x.Code.Contains("OW2") && !x.Exclude).Random(rng);
-                else
-                    warp2 = reachableWarps.Where(x => x.Code.Contains("OW1") && !x.Exclude).Random(rng);
-
-                var warp1Destination = warp1.GetDestinationWarp();
-                var warp2Destination = warp2.GetDestinationWarp();
-
-                warp1.WarpValue = warp2.LocationValue;
-                warp2.WarpValue = warp1.LocationValue;
-                warp1Destination.WarpValue = warp2Destination.LocationValue;
-                warp2Destination.WarpValue = warp1Destination.LocationValue;
-
-                reachableWarps = Pathfinding.Map(warpData);
-            }
-            //---------------------------------------//
-
-            //-- make sure the game is completable --//
+            //-- make sure all warps are accessible and seed is solvable --//
             var inventory = new FlagsCollection(new Enum[] { Items.Shield | Items.Sword });
-            var encounteredWarps = new List<Warp>();
-            var encounteredConstraints = new List<Enum>();
+
+            var reachableWarps = Pathfinding.Map(warpList);
+            var solvable = Pathfinding.TrySolve(warpList, ref inventory, out List<WarpData> encounteredWarps, out List<Enum> encounteredConstraints, out string output);
 
             var count = 0;
-            while (!Pathfinding.TrySolve(warpData, ref inventory, out encounteredWarps, out encounteredConstraints))
+            while (reachableWarps.Count < warpList.Count || !solvable)
             {
-                var possibleWarps = requiredWarps.Where(x => encounteredConstraints.Contains(x.Item) && !warpData[x.Code].Exclude).Select(x => warpData[x.Code]).ToList(); //too restrictive??
-
-                if (possibleWarps.Count > 0)
+                if (count++ > 1000)
                 {
-                    var warp1 = possibleWarps.Random(rng);
-                    var warp2 = encounteredWarps.Where(x => x.Code.Contains("OW1") && !x.Exclude).Random(rng);
+                    log.Write(LogMode.Output, "ERROR: Infinite loop");
+                    break;
+                }
 
+                WarpData warp1 = null;
+                WarpData warp2 = null;
+
+                if (reachableWarps.Count < warpList.Count)
+                {
+                    var unreachableWarps = warpList.Where(x => !reachableWarps.Contains(x) && !x.Exclude).ToList();
+
+                    if (unreachableWarps.Count != 0) //this temporary bullshit is because of OW2-02
+                    {
+                        warp1 = unreachableWarps.Random(rng);
+
+                        if (warp1.Code.Contains("OW1"))
+                            warp2 = reachableWarps.Where(x => x.Code.Contains("OW2") && !x.Exclude).Random(rng);
+                        else
+                            warp2 = reachableWarps.Where(x => x.Code.Contains("OW1") && !x.Exclude).Random(rng);
+
+                        log.Write(LogMode.Output, "DEBUG: Shuffling an unreachableWarp");
+                    }
+                    else
+                    {
+                        //error log
+                        var missingWarps = new StringBuilder();
+                        warpList.Where(x => !reachableWarps.Contains(x)).ToList().ForEach(x => missingWarps.Append(x.Code + ", "));
+                        log.Write(LogMode.Output, "ERROR: Unable to make all warps accessible", "\t=> Warps: " + reachableWarps.Count.ToString() + "/" + warpList.Count.ToString(), "\t=> " + missingWarps.ToString());
+                    }
+                }
+                else if (!solvable)
+                {
+                    var possibleWarps = requiredWarps.Where(x => encounteredConstraints.Contains(x.Item) && !warpList[x.Code].Exclude).Select(x => warpList[x.Code]).ToList(); //too restrictive??
+
+                    if (possibleWarps.Count > 0)
+                    {
+                        warp1 = possibleWarps.Random(rng);
+                        warp2 = encounteredWarps.Where(x => x.Code.Contains("OW1") && !x.Exclude).Random(rng);
+
+                        log.Write(LogMode.Output, "DEBUG: Shuffling a possibleWarp (" + warp1.Code + ")");
+                    }
+                    else
+                    {
+                        warp1 = encounteredWarps.Where(x => !x.Exclude).Random(rng);
+
+                        var unencounteredWarps = warpList.Where(x => !encounteredWarps.Contains(x) && !x.Exclude).ToList();
+
+                        if (unencounteredWarps.Count != 0)
+                            possibleWarps = unencounteredWarps;
+                        else
+                            possibleWarps = warpList;
+
+                        if (warp1.Code.Contains("OW1"))
+                            warp2 = possibleWarps.Where(x => x.Code.Contains("OW2") && !x.Exclude).Random(rng);
+                        else
+                            warp2 = possibleWarps.Where(x => x.Code.Contains("OW1") && !x.Exclude).Random(rng);
+
+                        //error log
+                        log.Write(LogMode.Output, "ERROR: No possible \"required\" warps");
+                    }
+                }
+
+                if (warp1 != null && warp2 != null)
+                {
                     var warp1Destination = warp1.GetDestinationWarp();
                     var warp2Destination = warp2.GetDestinationWarp();
 
@@ -147,21 +177,26 @@ namespace LADXRandomizer
                     warp1Destination.WarpValue = warp2Destination.LocationValue;
                     warp2Destination.WarpValue = warp1Destination.LocationValue;
                 }
+                else
+                {
+                    //error log
+                    log.Write(LogMode.Output, "ERROR: Failed to create good seed");
+                    break;
+                }
 
-                //reset inventory before next iteration
                 inventory = new FlagsCollection(new Enum[] { Items.Shield | Items.Sword });
 
-                if (count++ == 100)
-                    break;
+                reachableWarps = Pathfinding.Map(warpList);
+                solvable = Pathfinding.TrySolve(warpList, ref inventory, out encounteredWarps, out encounteredConstraints, out output);
             }
             //---------------------------------------//
 
-            var warps = Pathfinding.Map(warpData);
-            var success = Pathfinding.TrySolve(warpData, ref inventory, out encounteredWarps, out encounteredConstraints);
-            //log.Write(LogMode.Info, seed.ToString("X8"), "", "warps: " + warps.Count.ToString(), "success: " + success.ToString(), "", "INVENTORY:\n" + inventory.ToString());
-            log.Write(LogMode.Info, "warps: " + warps.Count.ToString(), "success: " + success.ToString(), "", "INVENTORY:\r\n" + inventory.ToString());
+            inventory = new FlagsCollection(new Enum[] { Items.Shield | Items.Sword });
+            var warps = Pathfinding.Map(warpList);
+            var success = Pathfinding.TrySolve(warpList, ref inventory, out encounteredWarps, out encounteredConstraints, out output);
+            log.Write(LogMode.Output, "warps: " + warps.Count.ToString(), "success: " + success.ToString(), output);
 
-            return (warpData, success);
+            return (warpList, success);
         }
 
         public static int[] GenerateMapEdits(MT19937 rng)
