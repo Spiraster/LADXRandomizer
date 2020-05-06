@@ -1,35 +1,33 @@
 ﻿using LADXRandomizer.Properties;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static LADXRandomizer.IO.RandomizerIO;
+using System.Linq;
+using System.Text;
+using LADXRandomizer.IO;
 
 namespace LADXRandomizer
 {
     public partial class MainForm : Form
     {
         private bool debug = true;
-
-        private Randomizer randomizer;
+        
         private RandomizerLog log;
-        private Version version;
+        private string filename;
+
+        private Version version => Assembly.GetExecutingAssembly().GetName().Version;
 
         private Stopwatch stopwatch = new Stopwatch();
-
-        private string Filename
-        {
-            get { return "[V" + version.ToString(1) + "] - " + randomizer.Seed; }
-        }
-
+        
         public MainForm()
         {
             InitializeComponent();
-
-            version = Assembly.GetExecutingAssembly().GetName().Version;
+            
             lbl_Version.Text = "v" + version.ToString(3);
 
             cmb_Preset.SelectedIndex = 0;
@@ -42,39 +40,60 @@ namespace LADXRandomizer
             log = new RandomizerLog(debug);
             log.UpdateLog += log_onUpdateLog;
 
-            var settings = new RandomizerSettings(mask);
+            //var settings = new RandomizerSettings(mask);
+            var settings = new RandomizerSettings(385);
 
-            //var pathfinder = new Pathfinding.Pathfinder();
-            //var warpdata = new WarpData(new RandomizerSettings(385));
-            //warpdata.ForEach(x => x.Destination = x.Default);
-            //txt_Log.SynchronizedInvoke(() => txt_Log.Text = pathfinder.IsSolvable(warpdata).ToString() + " (count = " + pathfinder.FinalCount.ToString() + ")" + "\r\n\r\n" + pathfinder.Result);
+            var seed = Randomizer.GetSeed(txt_Seed.Text);
+            var rng = new MT19937(seed);
 
-            randomizer = new Randomizer(txt_Seed.Text.Trim(' '), log, settings);
+            log.Write(LogMode.Info, "Seed: " + seed.ToString("X8"));
 
-            stopwatch.Restart();
-            randomizer.GenerateData();
-            stopwatch.Stop();
-            log.Write(LogMode.Info, "", "DONE! (" + stopwatch.ElapsedMilliseconds.ToString() + "ms)", "<l1>");
+            var mapEdits = Randomizer.GenerateMapEdits(rng);
+            (var warpData, var success) = Randomizer.GenerateData(rng, mapEdits, settings, log);
+
+            //stopwatch.Restart();
+            //randomizer.GenerateData();
+            //stopwatch.Stop();
+            //log.Write(LogMode.Info, "", "DONE! (" + stopwatch.ElapsedMilliseconds.ToString() + "ms)", "<l1>");
 
             log.LogSettings(settings);
 
-            WriteRom(randomizer, settings, Filename);
+            foreach (var warp1 in warpData.Overworld1)
+            {
+                var warp2 = warp1.GetDestinationWarp();
+
+                string text1 = "[" + warp1.Code + "] " + warp1.Description;
+
+                string text2 = "";
+                if (warp2 != null)
+                    text2 = "[" + warp2.Code + "] " + warp2.Description;
+
+                log.Write(LogMode.Spoiler, text1 + "\r\n    ^=> " + text2 + "\r\n");
+            }
+
+            filename = "[V" + version.ToString(1) + "] - " + seed.ToString("X8");
+
+            RandomizerIO.WriteRom(warpData, mapEdits, seed, settings, filename);
         }
 
         private void BatchTest()
         {
-            int tests;
-            if (!int.TryParse(txt_BatchNum.Text, out tests))
+            if (!int.TryParse(txt_BatchNum.Text, out int tests))
                 return;
 
+            var successRate = 0;
             var sw = new Stopwatch();
             sw.Restart();
             for (int i = 0; i < tests; i++)
             {
-                btn_Create_Click(this, EventArgs.Empty);
+                var rng = new MT19937(Randomizer.GetSeed(""));
+                (var warpData, var success) = Randomizer.GenerateData(rng, Randomizer.GenerateMapEdits(rng), new RandomizerSettings(385), new RandomizerLog(debug));
+                if (success)
+                    successRate++;
             }
             sw.Stop();
-            MessageBox.Show("Average: " + (sw.ElapsedMilliseconds / tests).ToString() + " ms");
+
+            MessageBox.Show("Average Time: " + (sw.ElapsedMilliseconds * (1.0 / tests)).ToString() + " ms\n" + "Success Rate: " + (successRate * 1.0 / tests).ToString("p"));
         }
 
         //event methods//
@@ -130,7 +149,7 @@ namespace LADXRandomizer
 
         private void btn_SaveLog_Click(object sender, EventArgs e)
         {
-            SaveLog(log, Filename);
+            RandomizerIO.SaveLog(log, filename);
             lbl_LogSaved.Visible = true;
         }
 
@@ -145,6 +164,11 @@ namespace LADXRandomizer
                 btn_Settings.Enabled = true;
             else
                 btn_Settings.Enabled = false;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            
         }
     }
 
@@ -161,5 +185,24 @@ namespace LADXRandomizer
             
             sync.Invoke(action, null);
         }
+
+        //get random item from a list//
+        public static T Random<T>(this IEnumerable<T> list, MT19937 rng) => list.ElementAt(rng.Next(list.Count()));
+
+        ////randomly shuffle the items in a list//
+        //public static List<T> Shuffle<T>(this List<T> oldList, MT19937 rng)
+        //{
+        //    int count = oldList.Count;
+        //    var newList = new List<T>(oldList);
+        //    for (int i = 0; i < count - 1; i++)
+        //    {
+        //        int k = rng.Next(i, count);
+        //        T temp = newList[i];
+        //        newList[i] = newList[k];
+        //        newList[k] = temp;
+        //    }
+
+        //    return newList;
+        //}
     }
 }

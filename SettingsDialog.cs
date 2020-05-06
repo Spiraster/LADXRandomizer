@@ -74,7 +74,6 @@ namespace LADXRandomizer
         private void UpdateMask()
         {
             var sb = new StringBuilder();
-            SettingsMask settingsMask;
 
             foreach (var setting in new RandomizerSettings())
             {
@@ -92,7 +91,7 @@ namespace LADXRandomizer
                 }
             }
 
-            if (Enum.TryParse(sb.ToString().Trim(',', ' '), out settingsMask))
+            if (Enum.TryParse(sb.ToString().Trim(',', ' '), out SettingsMask settingsMask))
                 mask = (int)settingsMask;
 
             Text = "Settings (Mask = " + mask.ToString() + ")";

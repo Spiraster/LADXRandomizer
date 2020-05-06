@@ -32,8 +32,7 @@ namespace LADXRandomizer
             }
             else if (radioButton2.Checked)
             {
-                int mask;
-                if (!int.TryParse(txt_Mask.Text, out mask) || mask < 1 || mask > 509)
+                if (!int.TryParse(txt_Mask.Text, out int mask) || mask < 1 || mask > 509)
                     MessageBox.Show("Mask must be between 1-252.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 else if (((SettingsMask)mask).HasFlag(SettingsMask.SelectedROM_0 | SettingsMask.SelectedROM_1) 
                          || ((SettingsMask)mask).HasFlag(SettingsMask.SelectedROM_1 | SettingsMask.SelectedROM_2) 

@@ -1,0 +1,32 @@
+﻿0x03 (left side)
+affects: OW1-03, OW1-10, OW1-11, OW1-13
+
+0x03 (right side)
+affects: OW1-04, OW1-13, OW1-15
+
+0x07
+affects: OW1-07, OW1-0A-1, OW1-0A-2, OW1-0A-3, OW1-18-2, OW1-19, OW1-1D-1
+
+0x09
+affects: OW1-07, OW1-0A-1, OW1-0A-2, OW1-0A-3, OW1-18-2, OW1-19, OW1-1D-1, OW1-2B-1, OW1-2B-2
+
+0x0E (left side)
+affects: OW1-0E, OW1-0F, OW1-1D-2, OW1-1E-1
+
+0x0E (right side)
+affects: OW1-0E, OW1-0F, OW1-1E-2, OW1-1F-1
+
+0x11 (left side)
+affects: OW1-03, OW1-10, OW1-11
+
+0x11 (right side)
+affects: OW1-03, OW1-04, OW1-10, OW1-11, OW1-13, OW1-15
+
+0x1B
+affects: OW1-07, OW1-0A-1, OW1-0A-2, OW1-0A-3, OW1-18-2, OW1-19, OW1-1D-1, OW1-2B-1, OW1-2B-2
+
+0x25/0x26/0x27
+affects: z13, z3
+
+0x8C/0x9C
+affects: OW1-8C, OW1-8D, OW1-8F, OW1-9C, OW1-9D, OW1-D9

@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>LADXRandomizer</RootNamespace>
     <AssemblyName>LADXRandomizer</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <IsWebBootstrapper>false</IsWebBootstrapper>
@@ -28,6 +28,7 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -83,21 +84,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Pathfind.cs" />
     <Compile Include="ImportDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ImportDialog.Designer.cs">
       <DependentUpon>ImportDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Pathfind.cs" />
+    <Compile Include="Randomizer.cs" />
     <Compile Include="RandomizerIO.cs" />
+    <Compile Include="RNG.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="MurmurHash2.cs" />
     <Compile Include="SettingsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -106,7 +108,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Randomizer.cs" />
     <Compile Include="RandomizerLog.cs" />
     <Compile Include="RandomizerSettings.cs" />
     <Compile Include="Warp.cs" />
@@ -152,7 +153,11 @@
     <None Include="Resources\Pineapple.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Notes.txt" />
+    <Content Include="Notes\Notes.txt" />
+    <Content Include="Notes\OW Connections.txt" />
+    <Content Include="Notes\OW Edits %28Overlay%29.txt" />
+    <Content Include="Notes\OW Edits %28Collision%29.txt" />
+    <Content Include="Notes\UW Edits.txt" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">

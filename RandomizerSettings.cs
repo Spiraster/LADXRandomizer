@@ -8,7 +8,7 @@ namespace LADXRandomizer
     public class RandomizerSettings : List<Setting>
     {
         private int mask;
-        public int Mask { get { return mask; } }
+        public int Mask => mask;
 
         public Setting this[string name]
         {
@@ -30,7 +30,7 @@ namespace LADXRandomizer
                 new Setting { Name = "ExcludeEgg" },
 
                 new Setting { Name = "CoverPitWarp", ShowInLog = false, Enabled = true },
-                new Setting { Name = "DebugMode", ShowInLog = false, Enabled = true },
+                new Setting { Name = "DebugMode", ShowInLog = false, Enabled = false },
             });
 
             var settingsMask = (SettingsMask)mask;

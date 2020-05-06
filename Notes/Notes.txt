@@ -1,0 +1,88 @@
+﻿To Do:
+[ ] Fixes:
+	[ ] figure out why entrances got swapped at 0x1F in seed "B513A8BB"
+	[ ] figure out how the pathfinder was able to solve seed "B513A8BB"
+	[ ] add map edits for Zone 10
+	[ ] move sword from beach to house
+	[ ] make flame skip cave require L2 shield both ways, or have flame skip only take 1 hit
+	[ ] force deadends behind bombable caves instead of opening them
+	[ ] prevent "house by the bay" from pairing with either D5 entrance or armos shrine
+	[ ] fix remaining one-ways:
+		[ ] D8 entrance
+		[ ] Richard's villa and cave
+		[ ] stone-covered entrances (force deadends)
+		[ ] prevent flock clipping dream shrine and woods cave??
+		[ ] Mamu's cave (force deadend)
+			- also find solution for cave being inaccessible after obtaining Song 3
+[ ] Solve issue where < 218 warps are accessible after randomization
+[ ] Update pathfinding
+	[ ] Possibly implement functional backtracking for the pathfinder (vs snapping back)
+	[x] Include all item constraints where necessary
+	[ ] Account for powder as a damage item?
+	[ ] Add all items (even if non-essential)
+		- potentially add trade items and l2 sword?
+
+Future Plans:
+[ ] Rename warp codes properly for OW and UWs (in excel)
+[ ] Renumber the OW zones
+[ ] Properly add ignored warps to randomizer and exclude them until sorted out
+
+[ ] Press 'Enter' to create seed if textbox has focus
+[ ] Figure out namespaces
+[ ] Rework settings customization
+[ ] Rename all uses of "address" in code to "offset"
+[ ] Make all "static readonly" Lists into ReadOnlyCollections
+
+[ ] Add option to disable dialog
+[ ] Remove owls
+[ ] Add seed hash to title screen (as with ALttP)
+[ ] Make sword pickup mandatory before exploring
+[ ] Update unlock animation for 0x2B, and fix warps immediately after unlock
+[ ] Remove side of MeowMeow's house on doghouse screen
+[x] Add a mechanic to return to base spawn (for use in case of softlock)
+[ ] Get it working with U1.0
+[ ] Add 'Hard' preset (checked for solvability like 'Standard' but warps are unpaired)
+[ ] Add 'Dungeon Guantlet' preset once details are worked out
+[ ] Add option to shuffle dungeon/cave stairs
+[ ] Add option to shuffle portals
+[ ] Write enabled options to ROM (0xFF000)
+[ ] Create output hash based on the randomized elements (can be used to tell duplicate randomizations from different seeds; SHA2?)
+[ ] Make logic adjustments
+	[ ] Add considerations for the ghost (don't spawn "house by the bay" behind D5 or southern face shrine)
+- Fun randomizations:
+	[ ] random chance for overworld changes (like no water)
+	[ ] randomize obstacles for blocked staircases (i.e. rocks, rooster statue, and mermaid statue)
+	[ ] lanmolas pit
+	
+[ ] Add chest randomization
+	
+Ignored warps:
+- Village well
+- Fisherman's bridge (need to figure out effect of difference in format)
+- Martha's Bay SS
+- Manbo's cave
+- Flooded cave
+- (Pit to flooded cave)
+
+Known Limitations:
+
+Potential Issues:
+- There's nothing stopping softlocks without the sword
+- D8 entrance could be a one-way softlock without the bombs
+- Richard's Villa is a 1-way without the slime key (or leaves)
+- Stones and rooster statue could be one-ways
+- Mamu's cave can't be opened after getting song 3
+		
+Notes:
+	- "Dead-ends" are only physical dead-ends
+	- Connections listed for all warps within a physical boundary
+		- Item constraints are set per connection (not per area)
+		- The direction for constraints are: FROM the connection TO the warp
+	- ZoneConnections (in warps) are listed FROM the zone TO the warp (same convention as normal connections)
+	- Zone objects will keep track exits that can access them (i.e. TO the zone FROM the warp)
+	- One-way tunnels (i.e. D4 cave and raft cave) are treated as dead-ends for both warps
+
+People to contact:
+- MrC0rrupted (twitch)
+- Hectate (discord)
+- zelgadissan (twitch)
