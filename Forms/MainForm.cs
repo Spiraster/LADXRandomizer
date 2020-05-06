@@ -20,7 +20,7 @@ namespace LADXRandomizer
 
         private Version version = Assembly.GetExecutingAssembly().GetName().Version;
 
-        public MainForm()
+        public MainForm(bool debug)
         {
             InitializeComponent();
             
@@ -38,7 +38,7 @@ namespace LADXRandomizer
             }
         }
 
-        private void CreateRom(Settings settings)
+        public void CreateRom(Settings settings)
         {
             var rom = new ROMBuffer(Resources.romJ10);
             var seed = Randomizer.GetSeed(txtSeed.Text);
@@ -49,6 +49,10 @@ namespace LADXRandomizer
             log.Print("Seed: " + seed, "Settings: " + Base62.ToBase62((uint)settings), "");
 
             rom.ApplySettings(settings);
+
+            if (true)
+                Randomizer.ShuffleThemes(rng, ref rom);
+
             rom.ApplyScreenEdits();
 
             if (settings.HasFlag(Settings.ShuffleWarps))
@@ -58,9 +62,6 @@ namespace LADXRandomizer
                 rom.UpdateWarps(warpList);
                 log.RecordWarps(warpList, settings);
             }
-
-            if (true)
-                Randomizer.ShuffleThemes(rng, ref rom);
 
             filename = "V" + version.ToString(1) + "_" + seed;
             rom.Save(filename, settings);

@@ -189,22 +189,22 @@ namespace LADXRandomizer
             var thirdRowIndexBuffer = new List<byte>();
             var firstRowIndexBuffer = new List<byte>();
             var wallsIndexBuffer = new List<byte>();
-            foreach (var theme in new ThemeValues(rng))
+            foreach (var (Index, Floors, Statue, Walls) in new ThemeValues(rng))
             {
-                var offset = 0x843EF + theme.Index * 2;
+                var offset = 0x843EF + Index * 2;
                 colourPtrBuffer.Add(rom[offset]);
                 colourPtrBuffer.Add(rom[offset + 1]);
 
-                offset = 0x6A076 + theme.Index * 2;
+                offset = 0x6A076 + Index * 2;
                 tilePtrBuffer.Add(rom[offset]);
                 tilePtrBuffer.Add(rom[offset + 1]);
 
-                offset = 0x80589 + theme.Floors;
+                offset = 0x80589 + Floors;
                 thirdRowIndexBuffer.Add(rom[offset]);
 
-                firstRowIndexBuffer.Add(theme.Statue);
+                firstRowIndexBuffer.Add(Statue);
 
-                wallsIndexBuffer.Add(theme.Walls);
+                wallsIndexBuffer.Add(Walls);
             }
 
             rom.Write(0x843EF, colourPtrBuffer);
@@ -213,8 +213,15 @@ namespace LADXRandomizer
             //rom.Write(0x805CA, firstRowIndexBuffer);
             //rom.Write(0x805A9, wallsIndexBuffer);
 
-            //temp
-            rom.Write(0x8518B, 0xC9);
+            //patch overrides for new palettes
+                //remove D1, D3 overrides
+
+            //temp (prevent overrides)
+            //rom.Write(0x8518B, 0xC9);
+
+            //patch weird stairs in D7 and D8 (0xA8 -> 0xA2)
+            rom.ScreenEdits.Add(new ScreenData(2, 0x2E, "04 4D 04 F0 50 F6 29 F7 72 F5 02 29 03 25 C3 13 23 83 30 21 33 29 C2 50 0D 72 2B 73 0D 74 2C 82 34 A6 36 A7 C3 17 A7 01 A2 E2 06 F8 48 50 FE", null, null));
+            rom.ScreenEdits.Add(new ScreenData(2, 0x3A, "06 2D 40 F2 29 F7 71 F5 00 21 02 29 03 25 06 26 07 17 08 12 09 16 83 10 0D 13 23 C2 16 24 19 10 20 25 82 21 21 23 29 29 14 36 2A 83 37 21 82 68 06 70 23 71 0D 72 2C 73 2B 74 06 75 2C 77 2B 78 06 79 2C 86 62 20 64 0D 18 A0 05 A2 E0 00 00 48 50 FE", null, null));
 
             //patch tiles (0x6A076; 0x8C000)
             //D1 (0x4000)
@@ -224,15 +231,16 @@ namespace LADXRandomizer
             rom.Write(0x8C080, "06 06 06 06"); //pot
             rom.Write(0x8C238, "06 06 06 06"); //pot switch
             rom.Write(0x8C22C, "07 07 07 07"); //solid floor2
-            rom.Write(0x8C288, "01 01 01 01"); //wall stairs
-            rom.Write(0x8C28C, "01 01 01 01");
+            rom.Write(0x8C288, "04 04 04 04 04 04 04 04"); //wall stairs
             rom.Write(0x8C2D2, "00 00"); //entrance
             rom.Write(0x8C2DC, "00 00 04 00 00 00 00 04");
 
             //D2 (0x4400)
             rom.Write(0x8C418, "02 02 02 02"); //lava
+            rom.Write(0x8C4FC, "04 04 04 04"); //bombable wall (north)
             rom.Write(0x8C62C, "07 07 07 07"); //solid floor2
             rom.Write(0x8C638, "06 06 06 06"); //pot switch
+            rom.Write(0x8C688, "01 01 01 01 01 01 01 01"); //wall stairs
             rom.Write(0x8C750, "01 01 01 01"); //spikes
 
             //D3 (0x5400)
@@ -241,19 +249,45 @@ namespace LADXRandomizer
             rom.Write(0x8D46C, "07 07 07 07");
             rom.Write(0x8D62C, "07 07 07 07"); //solid floor2
             rom.Write(0x8D638, "06 06 06 06"); //pot switch
-            rom.Write(0x8D688, "01 01 01 01"); //wall stairs
-            rom.Write(0x8D68C, "01 01 01 01");
+            rom.Write(0x8D688, "04 04 04 04 04 04 04 04"); //wall stairs
             rom.Write(0x8D6D2, "07 07"); //entrance
             rom.Write(0x8D6DC, "07 07 04 07 07 07 07 04");
+            rom.Write(0x8D6EC, "04 07 04 07 07 04 07 04");
             rom.Write(0x8D750, "01 01 01 01"); //spikes
 
-
             //D4 (0x4800)
-            //D5 (0x5800)
-            //D6 (0x4C00)
-            //D7 (0x5C00)
-            //D8 (0x5000)
+            rom.Write(0x8C818, "02 02 02 02"); //lava
+            rom.Write(0x8CA2C, "06 06 06 06"); //solid floor2
+            rom.Write(0x8CA88, "01 01 01 01 01 01 01 01"); //wall stairs
+            rom.Write(0x8CB2C, "01 01 01 01"); //stairs up
+            rom.Write(0x8CB3C, "01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01"); //conveyors
+            rom.Write(0x8CB50, "01 01 01 01"); //spikes
 
+            //D5 (0x5800)
+            rom.Write(0x8D818, "02 02 02 02"); //lava
+            rom.Write(0x8D914, "04 01 04 01 01 04 01 04"); //spin door
+            rom.Write(0x8DA38, "06 06 06 06"); //pot switch
+            rom.Write(0x8DA88, "04 04 04 04 04 04 04 04"); //wall stairs
+            rom.Write(0x8DAD2, "04 04"); //entrance
+            rom.Write(0x8DADC, "04 04 04 04 04 04 04 04");
+            rom.Write(0x8DAEC, "04 04 04 04 04 04 04 04");
+            rom.Write(0x8DB50, "01 01 01 01"); //spikes
+
+            //D6 (0x4C00)
+            rom.Write(0x8CC18, "02 02 02 02"); //lava
+            rom.Write(0x8CE2C, "06 06 06 06"); //solid floor2
+            rom.Write(0x8CF2C, "01 01 01 01"); //stairs up
+            rom.Write(0x8CF50, "01 01 01 01"); //spikes
+
+            //D7 (0x5C00)
+            rom.Write(0x8DC18, "02 02 02 02"); //lava
+            rom.Write(0x8DE38, "06 06 06 06"); //pot switch
+
+            //D8 (0x5000)
+            rom.Write(0x8D038, "07 07 07 07"); //water
+            rom.Write(0x8D06C, "07 07 07 07");
+            rom.Write(0x8D22C, "06 06 06 06"); //solid floor2
+            rom.Write(0x8D350, "01 01 01 01"); //spikes
         }
 
         public static string GetSeed(string input)
@@ -285,15 +319,15 @@ namespace LADXRandomizer
 
         public ThemeValues(MT19937_64 rng)
         {
-            foreach (var val in Enumerable.Range(0, totalThemes).Shuffle(rng))
+            foreach (var index in Enumerable.Range(0, totalThemes).Shuffle(rng))
             {
-                int floors = Enumerable.Range(0, 4).Select(x => (x * 2) + (val % 2))
+                int floors = Enumerable.Range(0, 4).Select(x => (x * 2) + (index % 2))
                                                    .Where(x => !Exists(y => y.Floors == x))
                                                    .Random(rng);
                 byte statue = new byte[] { 0x77, 0x78, 0x79 }.Random(rng);
                 byte walls = new byte[] { 0x40, 0x6C, 0x6E, 0x4A }.Random(rng);
 
-                Add((2, floors, statue, walls));
+                Add((index, floors, statue, walls));
             }
         }
     }

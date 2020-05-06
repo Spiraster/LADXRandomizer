@@ -40,11 +40,14 @@ C173 - text to load
 		- ROM0:2554 is where it gets read to print the text
 C18E - event data for current room
 ?? C2EF - bomb timer
+C360 - start of enemy HP
 C51F - type of queued animation (i.e. 01 = splash; 03 = chest animation)
 C52F - current frame of queued animation
 C53F - X-pos of animation (in pixels)
 C54F - Y-pos of animation (in pixels)
 C5AA - counter for correct egg maze transitions
+CE80 - screens being tracked for kills
+CF00 - table (0x100) tracking indices of killed mobs for currently tracked screens
 D368 - next music track to play
 D369 - current music track
 DB44 - shield level (affects Marin and Tarin)
@@ -56,10 +59,12 @@ DB56 - bow wow flag
 		- returns to 0x00 after returning bow wow
 DB73 - marin flag
 DB79 - ghost flag
+DB7A - house by the bay flag (for ghost)
 DB7B - rooster flag
 DB7C - egg maze flag
 		- gets set when reading the book with the ML (0x00, 0x08, 0x10 or 0x18)
 		- undergoes 3 right shifts before loading book text
+DB7D - boomerang item storage
 DB8F/DB90 - rupees to gain
 DB91/DB92 - rupees to lose
 DBA5 - underworld flag

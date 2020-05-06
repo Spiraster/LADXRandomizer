@@ -1,0 +1,21 @@
+DC0C (left to right)
+- bit #8 (+0x0080) = Fisherman photo
+- bit #7 (+0x0040) = Shoplifting photo
+- bit #6 (+0x0020) = Bow-Wow photo
+- bit #5 (+0x0010) = Ulrira photo
+
+- bit #4 (+0x0008) = Rooster statue photo
+- bit #3 (+0x0004) = Well photo
+- bit #2 (+0x0002) = Cliff photo
+- bit #1 (+0x0001) = Portrait
+
+DC0D (left to right):
+- bit #16 (+0x8000) = Sets the 'Portrait' photo to the 'Game Over' photo (this bit isn't an actual photo)
+- bit #15 (+0x4000) = unused
+- bit #14 (+0x2000) = unused
+- bit #13 (+0x1000) = unused
+
+- bit #12 (+0x0800) = Tal Tal bridge photo (mouse falling)
+- bit #11 (+0x0400) = Ghost photo
+- bit #10 (+0x0200) = Richard photo
+- bit #9 (+0x0100) = Zora photo

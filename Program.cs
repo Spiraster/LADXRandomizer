@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows.Forms;
 using Microsoft.Win32;
 
@@ -13,11 +14,14 @@ namespace LADXRandomizer
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
+
+            //bool debug = args.Length > 0 && (args[0] == "-d" || args[0] == "--debug");
+            Application.Run(new MainForm(Debug));
+            //new MainForm(true).CreateRom((Settings)Properties.Settings.Default.SettingsValue);
         }
 
         public static int GetFrameworkVersion()

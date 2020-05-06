@@ -19,7 +19,7 @@ D4: 62C0, 6360
 D5: 63B0, 6450, 64A0
     - changes BG6 (entrance mat, crystals, pots)
 D7: 65B0, 6650, (6600)
-    - changes BG7 (entrance mat, pits)
+    - changes BG7 (entrance mat, pits, boss)
 
 =Palette Use= [wall, floor1, floor2, floor3]
 D1: 4, 5, 7, 0
@@ -102,6 +102,7 @@ D8: 1F 31 15 00 0B 00 00 00 [4] (walls)
 + 0x6C [1B] (shallow water)
 + 0x70 [1C] (speckled pits; 4 tiles)
 + 0x80 [20] (pot)
++ 0xFC [3F] (bombable walls; 4 tiles)
 + 0x13C [4F] (obstacle)
 + 0x22C [8B] (solid floor2)
 + 0x238 [8E] (pot switch)
@@ -111,6 +112,8 @@ D8: 1F 31 15 00 0B 00 00 00 [4] (walls)
 + 0x2B8 [AE] (pits; 3 tiles)
 + 0x2CC [B3] (entrance; 11 tiles)
 + 0x300 [C0] (statue)
++ 0x32C [CB] (stairs up)
++ 0x33C [CF] (conveyors; 4 tiles)
 + 0x350 [D4] (spikes)
 + 0x368 [DA] (flying tile)
 + 0x36C [DB] (rising floors; 2 tiles)
@@ -129,49 +132,18 @@ Issues:
     - all:
         - flying tiles (must account for object palette)
         - obstacles/crystals? (find solution with overrides)
-        - D7 special tiles (0x8B)
-        - lava
-    - D1:
-        - entrance
-        - pots
-        - pot-covered switch (0x8E)
-        - water
-        - wall stairs
-    - D2:
-        - pot switch
-        - spikes?
-    - D3:
-        - entrance
-        - water
-        - pot switch
-        - wall stairs
-        - spikes
-    - D4:
-        - upward stairs
-        - moving floors (ala D3)
-        - wall stairs
-        - spikes
     - D5:
-        - spin doors
         - floor2 looks gross
             - ok: D7, (D8)
             - bad: (D2), D3/D6
             - passable: D1, (D4)
-        - pot switch
-        - wall stairs
-        - spikes
-    - D6:
-        - upward stairs
-        - spikes
     - D7:
         - floor2 looks gross
             - bad: D1, D2, D3/D6, D4
             - passable: D5, D8
-        - water
-        - pot switch
     - D8:
         - floor2 looks bad
-        - spikes?
+        - water
     - Egg:
         - too much
 

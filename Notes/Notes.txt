@@ -1,4 +1,43 @@
-﻿Things that may be required by the logic:
+﻿2019-04-19:
+Options:
+	- .NET Core
+		- Blazor for web
+		- Easy native console apps
+			- what about a GUI?
+				- Qt (qmlnet)
+				- Electron.NET? (or others?)
+				- Avalonia
+	- Electron
+		- Port to JS/TS
+		- Easy web deployment + native apps
+	- NW.js
+		- Similar to Electron
+		- Easier communication between windows
+		- Electron is more popular, but NW.js seems to have it's proponents too
+	- Haxe
+		- Transpile C# to Haxe
+		- Compile to Node + desktop
+
+2019-01-07:
+- Ditch the UI
+	- Make it a simple console app
+	- Just focus on core functionality
+- Switch to .NET Core (or something else?)
+	- Something cross-platform and possible to integrate into a web app
+
+2018-09-29:
+This should probably be split into multiple projects:
+	- Core randomization library
+	- Desktop frontend
+	- ASP.NET web frontend
+	- ROM editing library
+		- Can be dropped into future ROM editor project
+			- Save edits as project file, rather than requiring a working ROM
+	- Maybe utility library if required separately by the above projects
+
+--------------------------------
+
+Things that may be required by the logic:
 - SJs (incl. naked)
 
 Seed Issues:
@@ -7,24 +46,44 @@ Seed Issues:
 ------------
 -- To-do: --
 ------------
+[ ] Code cleanup:
+	[ ] Use WarpData.World where possible instead of Code.Contains
+	[ ] Generate WarpData.Code in contructor rather than passing it (if Code is even needed at all)
+	[ ] Update indexer for WarpList and ItemList to take string identifier and parse into World and Index
+	- Simplify ScreenData class:
+		[x] Move GetCollisionOffset and GetSpriteOffset methods into ROMBuffer
+		[x] Move the various offset calculations into aforementioned methods
+		[x] Create method to find end of collision/sprite data for a given bank instead of hard coding offsets for "buffers"
+	[ ] Why do NextCollisionOffset/NextSpriteOffset and GetWarpOffset loop differently?
+	[ ] Tidy Settings and ROMBuffer.ApplySettings()
+	[ ] Do something about ApplyScreenEdits
+	[ ] Put try-catch around File.WriteAllBytes()
+	[ ] Better organize classes with respect to code files (one class per file?)
+	[ ] Should ROMBuffer only contain simple manipulation methods?
+		- handle more specific and complex methods elsewhere? (i.e. ApplySettings or WriteScreenEdits)
+	[ ] Implement debug argument
+
 [ ] Implement item locations into pathfinding
 	- have pathfinder track these constraints as well
 	- use these instead of 'requiredWarps' list
+
+[ ] Implement theme shuffling for dungeons
+	[ ] Separate the patches and screen edits from the main shuffling function
+	[ ] Account for palette overrides AND use them to keep crystal/obstacle colours consistent
+		- make pots default (if possible)
+	[ ] Adjust object palettes based on new tile palettes (e.g. for flying tiles)
+	[ ] Convert light-accented themes to be dark-accented to allow for full shuffling
+	[ ] Fix gross looking floor2's (i.e. D5, D7 and D8 palettes)
+	[ ] Fix palette for D7 boss
+		- tileset needs to be updated for the relevant tiles but could potentially not work with other dungeons
+	[ ] Expand shuffling beyond dungeons
+
 [ ] Create separate logics (excel connections & pathfinder)
 	[ ] Speedrunner
 	[ ] Casual
 [ ] Get unpaired warps working
 [ ] Don't render followers in D0
 [x] Make D4 warps active immediately after opening cutscene
-[ ] Code cleanup:
-	[ ] Use WarpData.World where possible instead of Code.Contains
-	[ ] Generate WarpData.Code in contructor rather than passing it (if Code is even needed at all)
-	[ ] Update indexer for WarpList and ItemList to take string identifier and parse into World and Index
-	- Simplify ScreenData class:
-		[ ] Move GetCollisionOffset and GetSpriteOffset methods into ROMBuffer
-		[ ] Move the various offset calculations into aforementioned methods
-	[ ] Why do NextCollisionOffset and GetWarpOffset loop differently?
-	[ ] Tidy Settings and ROMBuffer.ApplySettings()
 [ ] Randomize dungeon palettes
 [ ] Randomly replace tiles and palettes with sets from the oracles
 [ ] Randomize soundtracks
@@ -41,10 +100,13 @@ Seed Issues:
 	[ ] Bananas can give access to Zone 9 w/o flippers
 [x] Add support for custom chest event locations
 	[x] Convert all key drops into chests
+	[ ] Add screen edits for a couple of chest screens in D3
+	[ ] Add screen edits for new chests in D0
 [ ] Patch heart graphics to look like Oracles hearts
 [ ] Find patch to make bombs/arrows/powder limitless
 [ ] Patch wrong warping
 [ ] Activate ocarina menu on button press rather than hover
+[ ] Custom tunic colours
 
 Future Plans:
 [ ] Rename warp codes properly for OW and UWs (and adjust OW2 descriptions)
