@@ -12,7 +12,7 @@ namespace LADXRandomizer.IO
 {
     static class RandomizerIO
     {
-        public static void WriteRom(Randomizer randomizer, RandomizerOptions options, string filename)
+        public static void WriteRom(Randomizer randomizer, RandomizerSettings options, string filename)
         {
             if (!Directory.Exists("Output"))
                 Directory.CreateDirectory("Output");
@@ -87,60 +87,6 @@ namespace LADXRandomizer.IO
 
             using (var output = new StreamWriter(file))
                 output.Write(log.FullLog);
-        }
-
-        public static RandomizerOptions LoadOptions()
-        {
-            var options = new RandomizerOptions();
-
-            if (!File.Exists("settings.xml"))
-                return options;
-
-            try
-            {
-                var doc = new XmlDocument();
-                doc.Load("settings.xml");
-                var settings = doc["settings"];
-
-                foreach (var option in options)
-                {
-                    if (settings[option.Name] != null)
-                    {
-                        if (option.Type == typeof(ComboBox))
-                            option.Index = int.Parse(settings[option.Name].InnerText);
-                        else
-                            option.Enabled = bool.Parse(settings[option.Name].InnerText);
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                if (File.Exists("settings.bak"))
-                    File.Delete("settings.bak");
-
-                File.Move("settings.xml", "settings.bak");
-                MessageBox.Show("Error loading settings file. Using default options instead.\n(" + e.GetType().ToString() + ")", "Woops :(");
-            }
-
-            return options;
-        }
-
-        public static void SaveOptions(RandomizerOptions options)
-        {
-            var doc = new XmlDocument();
-            var settings = doc.CreateElement("settings");
-
-            doc.AppendChild(settings);
-
-            foreach (var option in options)
-            {
-                if (option.Type == typeof(ComboBox))
-                    settings.AppendChild(ToElement(doc, option.Name, option.Index));
-                else
-                    settings.AppendChild(ToElement(doc, option.Name, option.Enabled));
-            }
-
-            doc.Save("settings.xml");
         }
 
         private static byte[] GetHeader(string seed, ref byte checksum)

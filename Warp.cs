@@ -19,10 +19,10 @@ namespace LADXRandomizer
 
         public WarpData(List<Warp> list)
         {
-            this.AddRange(list);
+            AddRange(list);
         }
 
-        public WarpData(RandomizerOptions options)
+        public WarpData(RandomizerSettings options)
         {
             OverworldWarps1();
             OverworldWarps2();
@@ -156,6 +156,7 @@ namespace LADXRandomizer
                 Code = "OW1-0E",
                 Description = "Entrance to D7",
                 Address = 0x2484A,
+                Address2 = 0x247E6,
                 Location = 0xE0000E5830,
                 Default = 0xE1060E507C,
                 Locked = true,
@@ -1441,6 +1442,7 @@ namespace LADXRandomizer
                 Code = "OW2-0E",
                 Description = "D7 - Entrance",
                 Address = 0x2C539,
+                Address2 = 0x2CB8E,
                 Location = 0xE1060E507C,
                 Default = 0xE0000E5830,
                 DeadEnd = true,
@@ -1462,6 +1464,7 @@ namespace LADXRandomizer
                 Code = "OW2-10",
                 Description = "D8 - Entrance",
                 Address = 0x2D536,
+                Address2 = 0x2CC39,
                 Location = 0xE1075D507C,
                 Default = 0xE000105810,
                 Connections = new Connection[]
@@ -1669,6 +1672,7 @@ namespace LADXRandomizer
                 Code = "OW2-24",
                 Description = "D2 - Entrance",
                 Address = 0x28DB6,
+                Address2 = 0x28ACB,
                 Location = 0xE10136507C,
                 Default = 0xE000243822,
                 DeadEnd = true,
@@ -1679,6 +1683,7 @@ namespace LADXRandomizer
                 Code = "OW2-2B-1",
                 Description = "D4 - Entrance",
                 Address = 0x29E68,
+                Address2 = 0x297F2,
                 Location = 0xE1037A507C,
                 Default = 0xE0002B4822,
                 DeadEnd = true,
@@ -1924,6 +1929,7 @@ namespace LADXRandomizer
                 Code = "OW2-77",
                 Description = "D0 - Entrance",
                 Address = 0x2BED1,
+                Address2 = 0x2BBE0,
                 Location = 0xE1FF12505C,
                 Default = 0xE00077782E,
                 DeadEnd = true,
@@ -2020,6 +2026,7 @@ namespace LADXRandomizer
                 Code = "OW2-8C",
                 Description = "D6 - Entrance",
                 Address = 0x2AFCD,
+                Address2 = 0x2A98A,
                 Location = 0xE105D4507C,
                 Default = 0xE0008C3840,
                 Special = true,
@@ -2199,9 +2206,11 @@ namespace LADXRandomizer
                 Code = "OW2-B5",
                 Description = "D3 - Entrance",
                 Address = 0x29482,
+                Address2 = 0x29644,
                 Location = 0xE10252507C,
                 Default = 0xE000B56820,
                 DeadEnd = true,
+                Special = true,
             });
             this.Add(new Warp(this)
             {
@@ -2313,6 +2322,7 @@ namespace LADXRandomizer
                 Code = "OW2-D3",
                 Description = "D1 - Entrance",
                 Address = 0x286C1,
+                Address2 = 0x28281,
                 Location = 0xE10017507C,
                 Default = 0xE000D36822,
                 DeadEnd = true,
@@ -2344,6 +2354,7 @@ namespace LADXRandomizer
                 Code = "OW2-D9-1",
                 Description = "D5 - Entrance",
                 Address = 0x2A56B,
+                Address2 = 0x29F90,
                 Location = 0xE104A1507C,
                 Default = 0xE000D95840,
                 DeadEnd = true,
@@ -2420,6 +2431,7 @@ namespace LADXRandomizer
                 Code = "OW2-F4",
                 Description = "Cave - Boomerang moblin's cave (empty)",
                 Address = 0x2B84F,
+                Address2 = 0x2B891,
                 Location = 0xE11FF5487C,
                 Default = 0xE000F41820,
                 DeadEnd = true,
@@ -2558,6 +2570,7 @@ namespace LADXRandomizer
 			{
                 new Connection(0, Item.Flippers),
             },
+            new Connection[] { }, //Zone 10
         };
     }
 
@@ -2585,54 +2598,60 @@ namespace LADXRandomizer
 
         public Warp GetPair()
         {
-            return parentList.Where(x => x.Location == this.Destination).FirstOrDefault();
+            return parentList.Where(x => x.Location == Destination).FirstOrDefault();
+        }
+
+        public Warp GetOriginWarp()
+        {
+            return parentList.Where(x => x.Destination == Location).FirstOrDefault();
+        }
+
+        public Warp GetDestinationWarp()
+        {
+            return parentList.Where(x => x.Location == Destination).FirstOrDefault();
         }
     }
 
     public class Connection
     {
-        private int zone;
-        private string code;
-        private Item[] constraints;
-
-        public int Zone { get { return zone; } }
-        public string Code { get { return code; } }
-        public Item[] Constraints { get { return constraints; } }
+        public int Zone { get; }
+        public string Code { get; }
+        public Item[] Constraints { get; }
         
         public Connection(string code, Item constraint = 0)
         {
-            this.code = code;
-            this.constraints = new Item[] { constraint };
+            Code = code;
+            Constraints = new Item[] { constraint };
         }
 
         public Connection(string code, params Item[] constraints)
         {
-            this.code = code;
-            this.constraints = constraints;
+            Code = code;
+            Constraints = constraints;
         }
 
         public Connection(int zone, Item constraint = 0)
         {
-            this.zone = zone;
-            this.constraints = new Item[] { constraint };
+            Zone = zone;
+            Constraints = new Item[] { constraint };
         }
 
         public Connection(int zone, params Item[] constraints)
         {
-            this.zone = zone;
-            this.constraints = constraints;
+            Zone = zone;
+            Constraints = constraints;
         }
 
         public bool Accessible(Item allowedConstraint = 0)
         {
             if (allowedConstraint == 0)
             {
-                if (constraints.ToList().Exists(x => x != Item.None && x != Item.Bombs && x != Item.BowWow))
+                if (Constraints.ToList().Exists(x => x != Item.None && x != Item.Bombs && x != Item.BowWow))
                     return false;
             }
             else
             {
-                if (constraints.ToList().Exists(x => x != Item.None && x != Item.Bombs && x != Item.BowWow && x != allowedConstraint))
+                if (Constraints.ToList().Exists(x => x != Item.None && x != Item.Bombs && x != Item.BowWow && x != allowedConstraint))
                     return false;
             }
 
@@ -2640,17 +2659,17 @@ namespace LADXRandomizer
         }
     }
 
-    public enum Item
-    {
-        None,
-        Bombs,
-        Feather,
-        Bracelet,
-        Boots,
-        Flippers,
-        Hookshot,
-        Leaves,
-        BowWow,
-        Switch,
-    }
+    //public enum Item
+    //{
+    //    None,
+    //    Bombs,
+    //    Feather,
+    //    Bracelet,
+    //    Boots,
+    //    Flippers,
+    //    Hookshot,
+    //    Leaves,
+    //    BowWow,
+    //    Switch,
+    //}
 }

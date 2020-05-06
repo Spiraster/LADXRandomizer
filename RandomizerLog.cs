@@ -54,9 +54,9 @@ namespace LADXRandomizer
                 spoiler += sb.ToString();
         }
 
-        public void LogSettings(RandomizerOptions options)
+        public void LogSettings(RandomizerSettings options)
         {
-            Write(LogMode.Settings, "<l2>", "Settings:", "<l2>");
+            Write(LogMode.Settings, "<l2>", "Settings: (Mask = " + options.Mask.ToString() + ")", "<l2>");
             Write(LogMode.Settings, options["SelectedROM"].Name + " = " + (Rom)options["SelectedROM"].Index);
             foreach (var option in options)
             {

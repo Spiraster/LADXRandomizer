@@ -77,6 +77,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ImportDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ImportDialog.Designer.cs">
+      <DependentUpon>ImportDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pathfind.cs" />
     <Compile Include="RandomizerIO.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -85,24 +92,27 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="MurmurHash2.cs" />
-    <Compile Include="OptionsDialog.cs">
+    <Compile Include="SettingsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="OptionsDialog.Designer.cs">
-      <DependentUpon>OptionsDialog.cs</DependentUpon>
+    <Compile Include="SettingsDialog.Designer.cs">
+      <DependentUpon>SettingsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Randomizer.cs" />
     <Compile Include="RandomizerLog.cs" />
-    <Compile Include="RandomizerOptions.cs" />
+    <Compile Include="RandomizerSettings.cs" />
     <Compile Include="Warp.cs" />
+    <EmbeddedResource Include="ImportDialog.resx">
+      <DependentUpon>ImportDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="OptionsDialog.resx">
-      <DependentUpon>OptionsDialog.cs</DependentUpon>
+    <EmbeddedResource Include="SettingsDialog.resx">
+      <DependentUpon>SettingsDialog.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -136,7 +146,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Notes.txt" />
-    <Content Include="recycling.txt" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">

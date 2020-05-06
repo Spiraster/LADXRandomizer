@@ -6,45 +6,38 @@
 - Flooded cave
 - (Pit to flooded cave)
 
-Warps with 2 addresses:
-- Boomerang moblin's cave (needs to be merged)
-- OW-0E entrance to D7 (need to add 0x247E6)
-	- Check if any other locked dungeons have two warp addresses
-
 Known Limitations:
 - ExtendedZoneAccess() only goes 1 zone deep
-- "Locked" warps are only allowed to connect to direct dead ends
+- 'Locked' warps are only allowed to connect to direct dead ends
 - There's nothing stopping softlocks without the sword
+- D6 and D8 are probably less likely to spawn behind a 'locked' warp than they could be
 
 Potential Issues:
-- Hookshot gap cave being a 1-way without the feather
-- Getting stuck in Zone 2 without the feather
+- 1-ways can lead to softlock situations
+- Hookshot gap cave is a 1-way without the feather
+- Richard's Villa is a 1-way without the slime key (or leaves)
 - "OW1-13" may require special conditions (entrance to flame cave)
 - Can D2 still spawn behind D6 stairs?
 - It may be possible to get stuck behind bombable walls
 
+[ ] Add 'Hard' preset (checked for solvability like 'Standard' but warps are unpaired)
+[ ] Add 'Dungeon Guantlet' preset once details are worked out
 [ ] Add option to shuffle dungeon/cave stairs
-[ ] Add option to not pair warps
-[ ] Add option to automatically save log
-[ ] Write enabled options to ROM (0xFF000)
-[ ] Block pit to flooded cave (or plan around it)
-[ ] Use radio buttons to choose between presets or access to all options
-[ ] Add option to avoid jesus jumps (prefer flippers over feather)
 [ ] Add option to enable portals
-[ ] Randomize intrument warps with entrance warps (separate option or not?)
-[ ] Implement a settings bitmask
-[ ] Add option to create dungeon gauntlet ROM
-[ ] Add option to make ROMs always beatable
-	[x] Gather all info for warps
-	[ ] Update the list of warps in WarpData
-	- Methods left to implement
-		[ ] CheckZone8 (Kanalet)
-		[ ] Add considerations for the waterfall to CheckD4
-		[ ] Ensure that Zones 6 & 7 aren't isolated, or that dungeons are confined there
-		[x] Allow D6 to spawn behind locked warps (given certain conditions)
-		[ ] Make sure that the various 'checking' methods don't undo each other when creating new pairs
-	[ ] Probably combine isAccessible and ExtendedZoneAccess methods
-	[ ] Might want to make adjustments due to directionality of certain connections (i.e. richards villa, bombable cave walls, D8)
+[ ] Write enabled options to ROM (0xFF000)
+[ ] Fix ValidPairing and CheckLocked to not make assumptions about the passed warps
+[x] Randomize intrument warps with entrance warps (add as Address2)
+[ ] Make logic adjustments
+	[ ] Powder is necessary for the raccoon bomb trigger
+	[ ] S+Q takes you to dungeon entrance (fix D6 and D8)
+	[ ] D4 cave entrance was not connected to a dead end
+	[ ] Treat one-ways as their own thing (otherwise we get issues with locked warps)
+	[ ] Account for warp under stone in Left TalTal (make Zone 2 always accessible?)
+	[ ] Add considerations for the ghost (don't spawn "house by the bay" behind D5 or southern face shrine)
+[ ] Update checks to accomodate unpaired warps
+	[ ] Replace GetPair with GetDestinationWarp & GetOriginWarp
+	[ ] Update ValidPairing for the case of unpaired ROMs (a dead end could connect to another dead end provided the first is accessible and the second doesn't exit to a dead end)
+	[ ] Update CheckLocked
 	
 [ ] Add chest randomization
 
