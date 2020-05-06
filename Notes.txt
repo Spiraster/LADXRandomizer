@@ -13,28 +13,16 @@ Warps with 2 addresses:
 
 Known Limitations:
 - ExtendedZoneAccess() only goes 1 zone deep
-- "Locked" warps can only connect to direct dead ends
+- "Locked" warps are only allowed to connect to direct dead ends
 - There's nothing stopping softlocks without the sword
 
 Potential Issues:
 - Hookshot gap cave being a 1-way without the feather
 - Getting stuck in Zone 2 without the feather
-- There may be issues with D3
 - "OW1-13" may require special conditions (entrance to flame cave)
 - Can D2 still spawn behind D6 stairs?
+- It may be possible to get stuck behind bombable walls
 
-[x] Implement options support
-[x] Add option to include Marin's house
-[x] Add option to include the egg
-[x] Add option to make sure no warps match the default
-[x] Improve options implementation
-[x] Consolidate IO methods
-[x] Have filename include version
-[x] Have the log show enabled/disabled options
-[x] Write version and seed to ROM header
-[x] Update options list to use custom class instead of Dictionary (for non-bool options)
-[x] Add support in OptionsDialog and RandomizerIO for non-bool options
-[x] Add dropdown menu to select base ROM version and add checksum values for these
 [ ] Add option to shuffle dungeon/cave stairs
 [ ] Add option to not pair warps
 [ ] Add option to automatically save log
@@ -49,17 +37,19 @@ Potential Issues:
 [ ] Add option to make ROMs always beatable
 	[x] Gather all info for warps
 	[ ] Update the list of warps in WarpData
-	[x] Prevent physical dead ends from directly pairing, or along a physically constrained path
-	[x] Fixed Pathfind so that it actually followed through warps instead of getting stuck in the initial area
-	[x] Fixed Pathfind so that it (hopefully) won't get stuck in a loop if warps happen to loop
-	[ ] Implement methods to check specific criteria AFTER warps have been shuffled
-		[ ] If both Kanalet warps are dead-ends, then neither can be connected to 1st-floor Kanalet (wouldn't be able to open drawbridge)
-		[x] Prevent dungeons from being constrained by their own dungeon item (use pathfinding)
-		[ ] Somehow check zones in relation to dungeons (eg. D1 and D3 could both be confined to animal village)
-	[x] Solve the issue with "locked" warps
+	- Methods left to implement
+		[ ] CheckZone8 (Kanalet)
+		[ ] Add considerations for the waterfall to CheckD4
+		[ ] Ensure that Zones 6 & 7 aren't isolated, or that dungeons are confined there
+		[x] Allow D6 to spawn behind locked warps (given certain conditions)
+		[ ] Make sure that the various 'checking' methods don't undo each other when creating new pairs
+	[ ] Probably combine isAccessible and ExtendedZoneAccess methods
 	[ ] Might want to make adjustments due to directionality of certain connections (i.e. richards villa, bombable cave walls, D8)
-	[ ] Prevent getting boxed in by bombable walls 
-		
+	
+[ ] Add chest randomization
+
+[ ] Add option to disable dialog
+			
 Notes:
 	- "Dead-ends" are only physical dead-ends
 	- Connections listed for all warps within a physical boundary
@@ -68,21 +58,3 @@ Notes:
 	- ZoneConnections (in warps) are listed FROM the zone TO the warp (same convention as normal connections)
 	- Zone objects will keep track exits that can access them (i.e. TO the zone FROM the warp)
 	- One-way tunnels (i.e. D4 cave and raft cave) are treated as dead-ends for both warps
-
-Zones:
-	- Zone 1: Mabe Village & Mysterious Woods (incl. swamp telephone booth)
-	- Zone 2: South of D8
-		- Constrained by feather, and accessible from the mountain
-		- All 3 can be dead-ends
-
-	- Zone 6: Tal tal heights (physically isolated; split by water)
-		- Act as a zone depending on jesus jump option
-		- Can't be all dead-ends (unlike other zones) since you can only reach it via warps
-		- Zone a: West of stairs
-		- Zone b: North of stairs
-		- Zone c: East of stairs
-	- Zone ?: Animal Village, east of the bay, and Yarna Desert
-
-[ ] Add chest randomization
-
-[ ] Add option to disable dialog

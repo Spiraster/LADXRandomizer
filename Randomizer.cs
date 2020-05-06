@@ -30,6 +30,8 @@ namespace LADXRandomizer
             this.options = options;
             warpData = new WarpData(options);
 
+            MessageBox.Show(warpData.Count.ToString() + ", " + warpData.Overworld1.Count.ToString() + ", " + warpData.Overworld2.Count.ToString());
+
             D1 = warpData.Overworld2["OW2-D3"];
             D2 = warpData.Overworld2["OW2-24"];
             D3 = warpData.Overworld2["OW2-B5"];
@@ -65,7 +67,7 @@ namespace LADXRandomizer
             if (!attemptedWarpRandomization)
             {
                 log.Write(LogMode.Info, "Randomizing warps...");
-                log.Write(LogMode.Spoiler, "", "<l2>", "Warps: " + "(" + warpData.AllWarps.Count + " total)", "<l2>");
+                log.Write(LogMode.Spoiler, "", "<l2>", "Warps: " + "(" + warpData.Count + " total)", "<l2>");
                 attemptedWarpRandomization = true;
             }
             else
@@ -120,13 +122,25 @@ namespace LADXRandomizer
 
         private bool CheckLocked(Warp warp1, Warp warp2)
         {
-            if (!warp2.DeadEnd)
+            //D2 can't be under the rooster statue
+            if (warp2.Code == "OW2-24" && warp1.Code == "OW1-92") 
                 return false;
 
-            if (warp1.Code == "OW1-92" && warp2.Code == "OW2-24") //D2 can't be under the rooster statue
-                return false;
+            //allow D6 if it connects to dead end
+            if ((warp2.Code == "OW2-6C" && warpData["OW2-8C"].GetPair().DeadEnd)
+                || (warp2.Code == "OW2-8C" && warpData["OW2-6C"].GetPair().DeadEnd))
+                return true;
 
-            return true;
+            //allow D8 if it connects to dead ends
+            if ((warp2.Code == "OW2-00" && warpData["OW2-02"].GetPair().DeadEnd && warpData["OW2-10"].GetPair().DeadEnd)
+                || (warp2.Code == "OW2-02" && warpData["OW2-00"].GetPair().DeadEnd && warpData["OW2-10"].GetPair().DeadEnd)
+                || (warp2.Code == "OW2-10" && warpData["OW2-00"].GetPair().DeadEnd && warpData["OW2-02"].GetPair().DeadEnd))
+                return true;
+
+            if (warp2.DeadEnd)
+                return true;
+
+            return false;
         }
 
         private void CheckWarps()
@@ -137,20 +151,12 @@ namespace LADXRandomizer
 
             CheckZone2();
             CheckZone1();
-
-            //checks only for constraints blocking dungeons
+            
             CheckD1();
             CheckD2D6();
             CheckD4();
             CheckD5();
             CheckShop();
-            //figure out check to make sure Zones 6 and 7 aren't isolated (something with D4 and D5)
-            //probably merge isAccessible and ExtendedZoneAccess
-            //figure out Mamu's cave (probably extra condition in CheckD5)
-            //finish CheckZone8 for Kanalet
-            //figure out D4 entrance (CheckD4 might need more than this too)
-            //make .Pair a property of the Warp class
-            //combine WarpData and WarpList classes
         }
 
         private void CheckZone1()
@@ -303,6 +309,8 @@ namespace LADXRandomizer
 
         private void CheckZone8()
         {
+            log.Write(LogMode.Debug, " -> CheckZone8()");
+
             var exteriorWarp1 = warpData.Overworld1["OW1-49"];
             var exteriorWarp2 = warpData.Overworld1["OW1-69"];
             var interiorWarp1 = warpData.Overworld2["OW2-59-1"];
@@ -315,18 +323,37 @@ namespace LADXRandomizer
             //GetPaths(exteriorWarp2, ref exteriorWarp2_paths);
 
             //if one interior connects to either exterior, then make sure the other exterior is accessible
-            if (warpData.GetPair(exteriorWarp1).Code == interiorWarp1.Code || warpData.GetPair(exteriorWarp1).Code == interiorWarp2.Code)
+            if (exteriorWarp1.GetPair().Code == interiorWarp1.Code || exteriorWarp1.GetPair().Code == interiorWarp2.Code)
             {
                 while (exteriorWarp2.DeadEnd)
                     CreateNewPair(exteriorWarp2, "OW1-69");
             }
-            else if (warpData.GetPair(exteriorWarp2).Code == interiorWarp1.Code || warpData.GetPair(exteriorWarp2).Code == interiorWarp2.Code)
+            else if (exteriorWarp2.GetPair().Code == interiorWarp1.Code || exteriorWarp2.GetPair().Code == interiorWarp2.Code)
             {
                 while (exteriorWarp1.DeadEnd)
                     CreateNewPair(exteriorWarp1, "OW1-49");
             }
 
             //if both exterior are dead ends and one is a dungeon, then both interiors can't be behind that dungeon constraint
+        }
+
+        private void CheckSouthEast()
+        {
+            log.Write(LogMode.Debug, " -> CheckSouthEast()");
+
+            var paths = new List<Connection>();
+            foreach (var warp in warpData.Overworld1.Where(x => x.ZoneConnections.ToList().Exists(y => y.Zone == 6 || y.Zone == 7)))
+                GetPaths(warp, ref paths);
+
+            if (!paths.Exists(x => x.Zone != 6 && x.Zone != 7))
+            {
+                while ((!D4Paths.Exists(x => x.Zone != 6 && x.Zone != 7) && !D5Paths.Exists(x => x.Zone != 6 && x.Zone != 7))
+                       || !D4Paths.Exists(x => !x.Constraints.Contains(Item.Flippers))
+                       || !)
+                {
+
+                }
+            }
         }
 
         private void CheckD1()
@@ -394,7 +421,7 @@ namespace LADXRandomizer
                 log.Write(LogMode.Debug, "        Shuffling " + name + "...");
 
                 Warp warp2, warp2_pair;
-                var warp1_pair = warpData.GetPair(warp1);
+                var warp1_pair = warp1.GetPair();
 
                 do
                 {
@@ -403,7 +430,7 @@ namespace LADXRandomizer
                     else
                         warp2 = warpData.Overworld2[random.Next(warpData.Overworld2.Count)];
 
-                    warp2_pair = warpData.GetPair(warp2);
+                    warp2_pair = warp2.GetPair();
                 }
                 while (warp2_pair.Special || !ValidPairing(warp1, warp2) || !ValidPairing(warp1_pair, warp2_pair));
 
@@ -440,7 +467,7 @@ namespace LADXRandomizer
                 foreach (var warp in zone)
                     GetPaths(warp, ref zonePaths);
 
-                foreach (var connection in WarpData.ZoneConnections[num])
+                foreach (var connection in ZoneData.Connections[num])
                     zonePaths.Add(connection);
             }
 
@@ -481,7 +508,7 @@ namespace LADXRandomizer
             else if (previousWarps.Contains(warp.Code))
                 return;
 
-            warp = warpData.GetPair(warp);
+            warp = warp.GetPair();
 
             if (warp.Connections != null)
             {
@@ -490,7 +517,7 @@ namespace LADXRandomizer
                     if (previousWarps.Contains(connection.Code))
                         return;
 
-                    var nextWarp = warpData.AllWarps[connection.Code];
+                    var nextWarp = warpData[connection.Code];
 
                     var newConstraints = constraintList;
                     if (connection.Constraints != null)
@@ -535,7 +562,7 @@ namespace LADXRandomizer
                     if (previousWarps.Contains(connection.Code))
                         return false; //a loop back to a previous point in the path is considered a dead end
 
-                    var nextwarp = warpData.GetPair(connection.Code);
+                    var nextwarp = warpData[connection.Code].GetPair();
                     if (nextwarp != null)
                     {
                         var newPreviousWarps = previousWarps;
@@ -557,7 +584,7 @@ namespace LADXRandomizer
         {
             foreach (var warp1 in warpData.Overworld1)
             {
-                var warp2 = warpData.GetPair(warp1);
+                var warp2 = warp1.GetPair();
 
                 string text1 = "[" + warp1.Code + "] " + warp1.Description;
                 string text2 = "[" + warp2.Code + "] " + warp2.Description;
