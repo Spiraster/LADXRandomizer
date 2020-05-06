@@ -29,175 +29,153 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.btn_Create = new System.Windows.Forms.Button();
-            this.txt_Seed = new System.Windows.Forms.TextBox();
-            this.txt_Log = new System.Windows.Forms.TextBox();
+            this.btnCreateROM = new System.Windows.Forms.Button();
+            this.txtSeed = new System.Windows.Forms.TextBox();
+            this.txtLog = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.lbl_Version = new System.Windows.Forms.Label();
-            this.btn_Settings = new System.Windows.Forms.Button();
-            this.chk_FullLog = new System.Windows.Forms.CheckBox();
-            this.btn_SaveLog = new System.Windows.Forms.Button();
-            this.lbl_LogSaved = new System.Windows.Forms.Label();
-            this.btn_Batch = new System.Windows.Forms.Button();
-            this.txt_BatchNum = new System.Windows.Forms.TextBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.lblVersion = new System.Windows.Forms.Label();
+            this.btnCustomize = new System.Windows.Forms.Button();
+            this.btnSaveSpoiler = new System.Windows.Forms.Button();
+            this.btnBulkCreate = new System.Windows.Forms.Button();
+            this.txtBatchNum = new System.Windows.Forms.TextBox();
+            this.grpGeneration = new System.Windows.Forms.GroupBox();
+            this.grpOptions = new System.Windows.Forms.GroupBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.cmb_Preset = new System.Windows.Forms.ComboBox();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
-            this.groupBox3.SuspendLayout();
+            this.cmbPreset = new System.Windows.Forms.ComboBox();
+            this.grpLog = new System.Windows.Forms.GroupBox();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.grpGeneration.SuspendLayout();
+            this.grpOptions.SuspendLayout();
+            this.grpLog.SuspendLayout();
             this.SuspendLayout();
             // 
-            // btn_Create
+            // btnCreateROM
             // 
-            this.btn_Create.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btn_Create.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_Create.Location = new System.Drawing.Point(251, 58);
-            this.btn_Create.Name = "btn_Create";
-            this.btn_Create.Size = new System.Drawing.Size(75, 23);
-            this.btn_Create.TabIndex = 1;
-            this.btn_Create.Text = "Create";
-            this.btn_Create.UseVisualStyleBackColor = true;
-            this.btn_Create.Click += new System.EventHandler(this.btn_Create_Click);
+            this.btnCreateROM.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCreateROM.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCreateROM.Location = new System.Drawing.Point(158, 58);
+            this.btnCreateROM.Name = "btnCreateROM";
+            this.btnCreateROM.Size = new System.Drawing.Size(75, 23);
+            this.btnCreateROM.TabIndex = 1;
+            this.btnCreateROM.Text = "Create ROM";
+            this.btnCreateROM.UseVisualStyleBackColor = true;
+            this.btnCreateROM.Click += new System.EventHandler(this.btnCreate_Click);
             // 
-            // txt_Seed
+            // txtSeed
             // 
-            this.txt_Seed.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtSeed.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txt_Seed.Location = new System.Drawing.Point(6, 32);
-            this.txt_Seed.Name = "txt_Seed";
-            this.txt_Seed.Size = new System.Drawing.Size(320, 20);
-            this.txt_Seed.TabIndex = 0;
-            this.txt_Seed.Text = "test";
+            this.txtSeed.Location = new System.Drawing.Point(6, 32);
+            this.txtSeed.Name = "txtSeed";
+            this.txtSeed.Size = new System.Drawing.Size(308, 20);
+            this.txtSeed.TabIndex = 0;
+            this.txtSeed.Text = "test";
             // 
-            // txt_Log
+            // txtLog
             // 
-            this.txt_Log.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txt_Log.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_Log.Location = new System.Drawing.Point(3, 16);
-            this.txt_Log.Multiline = true;
-            this.txt_Log.Name = "txt_Log";
-            this.txt_Log.ReadOnly = true;
-            this.txt_Log.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txt_Log.Size = new System.Drawing.Size(515, 259);
-            this.txt_Log.TabIndex = 2;
-            this.txt_Log.TabStop = false;
+            this.txtLog.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtLog.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtLog.Location = new System.Drawing.Point(3, 16);
+            this.txtLog.Multiline = true;
+            this.txtLog.Name = "txtLog";
+            this.txtLog.ReadOnly = true;
+            this.txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtLog.Size = new System.Drawing.Size(504, 222);
+            this.txtLog.TabIndex = 2;
+            this.txtLog.TabStop = false;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(6, 16);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(244, 13);
+            this.label1.Size = new System.Drawing.Size(232, 13);
             this.label1.TabIndex = 3;
-            this.label1.Text = "Enter seed or string: (leave blank for random seed)";
+            this.label1.Text = "Enter seed string: (leave blank for random seed)";
             // 
-            // lbl_Version
+            // lblVersion
             // 
-            this.lbl_Version.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lbl_Version.AutoSize = true;
-            this.lbl_Version.ForeColor = System.Drawing.SystemColors.ControlDark;
-            this.lbl_Version.Location = new System.Drawing.Point(4, 401);
-            this.lbl_Version.Name = "lbl_Version";
-            this.lbl_Version.Size = new System.Drawing.Size(37, 13);
-            this.lbl_Version.TabIndex = 5;
-            this.lbl_Version.Text = "v0.0.0";
+            this.lblVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblVersion.AutoSize = true;
+            this.lblVersion.ForeColor = System.Drawing.SystemColors.ControlDark;
+            this.lblVersion.Location = new System.Drawing.Point(4, 343);
+            this.lblVersion.Name = "lblVersion";
+            this.lblVersion.Size = new System.Drawing.Size(37, 13);
+            this.lblVersion.TabIndex = 5;
+            this.lblVersion.Text = "v0.0.0";
             // 
-            // btn_Settings
+            // btnCustomize
             // 
-            this.btn_Settings.Enabled = false;
-            this.btn_Settings.Location = new System.Drawing.Point(99, 56);
-            this.btn_Settings.Name = "btn_Settings";
-            this.btn_Settings.Size = new System.Drawing.Size(75, 23);
-            this.btn_Settings.TabIndex = 2;
-            this.btn_Settings.Text = "Settings...";
-            this.btn_Settings.UseVisualStyleBackColor = true;
-            this.btn_Settings.Click += new System.EventHandler(this.btn_Settings_Click);
+            this.btnCustomize.Location = new System.Drawing.Point(102, 58);
+            this.btnCustomize.Name = "btnCustomize";
+            this.btnCustomize.Size = new System.Drawing.Size(75, 23);
+            this.btnCustomize.TabIndex = 2;
+            this.btnCustomize.Text = "Customize...";
+            this.btnCustomize.UseVisualStyleBackColor = true;
+            this.btnCustomize.Click += new System.EventHandler(this.btnCustomize_Click);
             // 
-            // chk_FullLog
+            // btnSaveSpoiler
             // 
-            this.chk_FullLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.chk_FullLog.AutoSize = true;
-            this.chk_FullLog.Location = new System.Drawing.Point(165, 62);
-            this.chk_FullLog.Name = "chk_FullLog";
-            this.chk_FullLog.Size = new System.Drawing.Size(80, 17);
-            this.chk_FullLog.TabIndex = 6;
-            this.chk_FullLog.Text = "Print full log";
-            this.chk_FullLog.UseVisualStyleBackColor = true;
+            this.btnSaveSpoiler.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSaveSpoiler.Enabled = false;
+            this.btnSaveSpoiler.Location = new System.Drawing.Point(239, 58);
+            this.btnSaveSpoiler.Name = "btnSaveSpoiler";
+            this.btnSaveSpoiler.Size = new System.Drawing.Size(75, 23);
+            this.btnSaveSpoiler.TabIndex = 2;
+            this.btnSaveSpoiler.Text = "Save Spoiler";
+            this.btnSaveSpoiler.UseVisualStyleBackColor = true;
+            this.btnSaveSpoiler.Click += new System.EventHandler(this.btnSaveLog_Click);
             // 
-            // btn_SaveLog
+            // btnBulkCreate
             // 
-            this.btn_SaveLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btn_SaveLog.Enabled = false;
-            this.btn_SaveLog.Location = new System.Drawing.Point(458, 390);
-            this.btn_SaveLog.Name = "btn_SaveLog";
-            this.btn_SaveLog.Size = new System.Drawing.Size(75, 23);
-            this.btn_SaveLog.TabIndex = 2;
-            this.btn_SaveLog.Text = "Save Log";
-            this.btn_SaveLog.UseVisualStyleBackColor = true;
-            this.btn_SaveLog.Click += new System.EventHandler(this.btn_SaveLog_Click);
+            this.btnBulkCreate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnBulkCreate.Location = new System.Drawing.Point(6, 58);
+            this.btnBulkCreate.Name = "btnBulkCreate";
+            this.btnBulkCreate.Size = new System.Drawing.Size(51, 23);
+            this.btnBulkCreate.TabIndex = 7;
+            this.btnBulkCreate.Text = "Bulk";
+            this.btnBulkCreate.UseVisualStyleBackColor = true;
+            this.btnBulkCreate.Visible = false;
+            this.btnBulkCreate.Click += new System.EventHandler(this.btnBatch_Click);
             // 
-            // lbl_LogSaved
+            // txtBatchNum
             // 
-            this.lbl_LogSaved.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.lbl_LogSaved.Location = new System.Drawing.Point(92, 395);
-            this.lbl_LogSaved.Name = "lbl_LogSaved";
-            this.lbl_LogSaved.Size = new System.Drawing.Size(360, 15);
-            this.lbl_LogSaved.TabIndex = 3;
-            this.lbl_LogSaved.Text = "Log saved!";
-            this.lbl_LogSaved.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.lbl_LogSaved.Visible = false;
+            this.txtBatchNum.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.txtBatchNum.Location = new System.Drawing.Point(63, 60);
+            this.txtBatchNum.Name = "txtBatchNum";
+            this.txtBatchNum.Size = new System.Drawing.Size(51, 20);
+            this.txtBatchNum.TabIndex = 8;
+            this.txtBatchNum.Text = "100";
+            this.txtBatchNum.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // btn_Batch
+            // grpGeneration
             // 
-            this.btn_Batch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btn_Batch.Location = new System.Drawing.Point(47, 390);
-            this.btn_Batch.Name = "btn_Batch";
-            this.btn_Batch.Size = new System.Drawing.Size(75, 23);
-            this.btn_Batch.TabIndex = 7;
-            this.btn_Batch.Text = "Batch";
-            this.btn_Batch.UseVisualStyleBackColor = true;
-            this.btn_Batch.Visible = false;
-            this.btn_Batch.Click += new System.EventHandler(this.btn_Batch_Click);
-            // 
-            // txt_BatchNum
-            // 
-            this.txt_BatchNum.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.txt_BatchNum.Location = new System.Drawing.Point(128, 392);
-            this.txt_BatchNum.Name = "txt_BatchNum";
-            this.txt_BatchNum.Size = new System.Drawing.Size(51, 20);
-            this.txt_BatchNum.TabIndex = 8;
-            this.txt_BatchNum.Text = "100";
-            this.txt_BatchNum.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.grpGeneration.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.txt_Seed);
-            this.groupBox1.Controls.Add(this.btn_Create);
-            this.groupBox1.Controls.Add(this.chk_FullLog);
-            this.groupBox1.Location = new System.Drawing.Point(201, 12);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(332, 87);
-            this.groupBox1.TabIndex = 9;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Generation";
+            this.grpGeneration.Controls.Add(this.label1);
+            this.grpGeneration.Controls.Add(this.txtSeed);
+            this.grpGeneration.Controls.Add(this.btnCreateROM);
+            this.grpGeneration.Controls.Add(this.txtBatchNum);
+            this.grpGeneration.Controls.Add(this.btnSaveSpoiler);
+            this.grpGeneration.Controls.Add(this.btnBulkCreate);
+            this.grpGeneration.Location = new System.Drawing.Point(201, 12);
+            this.grpGeneration.Name = "grpGeneration";
+            this.grpGeneration.Size = new System.Drawing.Size(321, 88);
+            this.grpGeneration.TabIndex = 9;
+            this.grpGeneration.TabStop = false;
+            this.grpGeneration.Text = "Generation";
             // 
-            // groupBox2
+            // grpOptions
             // 
-            this.groupBox2.Controls.Add(this.label2);
-            this.groupBox2.Controls.Add(this.cmb_Preset);
-            this.groupBox2.Controls.Add(this.btn_Settings);
-            this.groupBox2.Location = new System.Drawing.Point(12, 12);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(183, 87);
-            this.groupBox2.TabIndex = 10;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Options";
+            this.grpOptions.Controls.Add(this.label2);
+            this.grpOptions.Controls.Add(this.cmbPreset);
+            this.grpOptions.Controls.Add(this.btnCustomize);
+            this.grpOptions.Location = new System.Drawing.Point(12, 12);
+            this.grpOptions.Name = "grpOptions";
+            this.grpOptions.Size = new System.Drawing.Size(183, 88);
+            this.grpOptions.TabIndex = 10;
+            this.grpOptions.TabStop = false;
+            this.grpOptions.Text = "Options";
             // 
             // label2
             // 
@@ -208,58 +186,63 @@
             this.label2.TabIndex = 13;
             this.label2.Text = "Preset:";
             // 
-            // cmb_Preset
+            // cmbPreset
             // 
-            this.cmb_Preset.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmb_Preset.FormattingEnabled = true;
-            this.cmb_Preset.Items.AddRange(new object[] {
+            this.cmbPreset.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbPreset.FormattingEnabled = true;
+            this.cmbPreset.Items.AddRange(new object[] {
             "Standard",
-            "Chaos",
-            "Custom..."});
-            this.cmb_Preset.Location = new System.Drawing.Point(53, 16);
-            this.cmb_Preset.Name = "cmb_Preset";
-            this.cmb_Preset.Size = new System.Drawing.Size(121, 21);
-            this.cmb_Preset.TabIndex = 12;
-            this.cmb_Preset.SelectedIndexChanged += new System.EventHandler(this.cmb_Preset_SelectedIndexChanged);
+            "Custom"});
+            this.cmbPreset.Location = new System.Drawing.Point(53, 16);
+            this.cmbPreset.Name = "cmbPreset";
+            this.cmbPreset.Size = new System.Drawing.Size(123, 21);
+            this.cmbPreset.TabIndex = 12;
+            this.cmbPreset.SelectedIndexChanged += new System.EventHandler(this.cmbPreset_SelectedIndexChanged);
             // 
-            // groupBox3
+            // grpLog
             // 
-            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.grpLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox3.Controls.Add(this.txt_Log);
-            this.groupBox3.Location = new System.Drawing.Point(12, 106);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(521, 278);
-            this.groupBox3.TabIndex = 11;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Log";
+            this.grpLog.Controls.Add(this.txtLog);
+            this.grpLog.Location = new System.Drawing.Point(12, 99);
+            this.grpLog.Name = "grpLog";
+            this.grpLog.Size = new System.Drawing.Size(510, 241);
+            this.grpLog.TabIndex = 11;
+            this.grpLog.TabStop = false;
+            this.grpLog.Text = "Log";
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Enabled = false;
+            this.progressBar1.Location = new System.Drawing.Point(47, 343);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(173, 13);
+            this.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.progressBar1.TabIndex = 12;
             // 
             // MainForm
             // 
-            this.AcceptButton = this.btn_Create;
+            this.AcceptButton = this.btnCreateROM;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(545, 419);
-            this.Controls.Add(this.groupBox3);
-            this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.txt_BatchNum);
-            this.Controls.Add(this.btn_Batch);
-            this.Controls.Add(this.btn_SaveLog);
-            this.Controls.Add(this.lbl_Version);
-            this.Controls.Add(this.lbl_LogSaved);
+            this.ClientSize = new System.Drawing.Size(534, 361);
+            this.Controls.Add(this.progressBar1);
+            this.Controls.Add(this.grpLog);
+            this.Controls.Add(this.grpOptions);
+            this.Controls.Add(this.grpGeneration);
+            this.Controls.Add(this.lblVersion);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(550, 300);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "LADX Randomizer";
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
+            this.grpGeneration.ResumeLayout(false);
+            this.grpGeneration.PerformLayout();
+            this.grpOptions.ResumeLayout(false);
+            this.grpOptions.PerformLayout();
+            this.grpLog.ResumeLayout(false);
+            this.grpLog.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -267,22 +250,21 @@
 
         #endregion
 
-        private System.Windows.Forms.Button btn_Create;
-        private System.Windows.Forms.TextBox txt_Seed;
-        private System.Windows.Forms.TextBox txt_Log;
+        private System.Windows.Forms.Button btnCreateROM;
+        private System.Windows.Forms.TextBox txtSeed;
+        private System.Windows.Forms.TextBox txtLog;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label lbl_Version;
-        private System.Windows.Forms.Button btn_Settings;
-        private System.Windows.Forms.CheckBox chk_FullLog;
-        private System.Windows.Forms.Button btn_SaveLog;
-        private System.Windows.Forms.Label lbl_LogSaved;
-        private System.Windows.Forms.Button btn_Batch;
-        private System.Windows.Forms.TextBox txt_BatchNum;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.ComboBox cmb_Preset;
+        private System.Windows.Forms.Label lblVersion;
+        private System.Windows.Forms.Button btnCustomize;
+        private System.Windows.Forms.Button btnSaveSpoiler;
+        private System.Windows.Forms.Button btnBulkCreate;
+        private System.Windows.Forms.TextBox txtBatchNum;
+        private System.Windows.Forms.GroupBox grpGeneration;
+        private System.Windows.Forms.GroupBox grpOptions;
+        private System.Windows.Forms.GroupBox grpLog;
+        private System.Windows.Forms.ComboBox cmbPreset;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ProgressBar progressBar1;
     }
 }
 

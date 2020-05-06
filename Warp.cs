@@ -22,12 +22,12 @@ namespace LADXRandomizer
             AddRange(list);
         }
 
-        public WarpList(RandomizerSettings settings)
+        public WarpList(Settings settings)
         {
             Initialize();
             ZoneList = new ZoneList();
 
-            if (settings["ExcludeMarinHouse"].Enabled)
+            if (settings.HasFlag(Settings.ExcludeHouse))
             {
                 this["OW1-A2"].WarpValue = this["OW1-A2"].DefaultWarpValue;
                 this["OW1-A2"].Exclude = true;
@@ -35,7 +35,7 @@ namespace LADXRandomizer
                 this["OW2-A2"].Exclude = true;
             }
 
-            if (settings["ExcludeEgg"].Enabled)
+            if (settings.HasFlag(Settings.ExcludeEgg))
             {
                 this["OW1-06"].WarpValue = this["OW1-06"].DefaultWarpValue;
                 this["OW1-06"].Exclude = true;

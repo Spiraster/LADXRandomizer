@@ -1,159 +1,132 @@
-﻿using LADXRandomizer.Properties;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+
 
 namespace LADXRandomizer
 {
     public partial class SettingsDialog : Form
     {
-        private int mask;
-
-        public SettingsDialog(int mask)
+        public SettingsDialog(ulong settingsValue)
         {
             InitializeComponent();
 
-            this.mask = mask;
-
-            LoadSettings();
+            if (Program.Debug)
+            {
+                chkDebugMode.Visible = true;
+                chkDebugMode.Enabled = true;
+            }
+            
+            LoadSettings(settingsValue);
         }
 
-        private void btn_OK_Click(object sender, EventArgs e)
+        private void LoadSettings(ulong settingsValue)
         {
-            Settings.Default.OptionsMask = mask;
-            Settings.Default.Save();
+            GetAllControls<CheckBox>().ForEach(x => x.Checked = false);
+
+            var settings = ((Settings)settingsValue).ToString().Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (var setting in settings)
+                if (FindCheckBox(setting, out CheckBox checkbox))
+                    if (checkbox.Enabled)
+                        checkbox.Checked = true;
+            
+            UpdateValue();
+        }
+
+        private void UpdateValue()
+        {
+            var sb = new StringBuilder();
+
+            foreach (var setting in Enum.GetNames(typeof(Settings)))
+                if (FindCheckBox(setting, out CheckBox checkbox))
+                    if (checkbox.Checked)
+                        sb.Append(checkbox.Name.Replace("chk", "") + ", ");
+
+            if (Enum.TryParse(sb.ToString().Trim(',', ' '), out Settings settings))
+                txtValue.Text = Base62.ToBase62((uint)settings);
+            else
+                txtValue.Text = "0";
+        }
+
+        private bool FindCheckBox(string search, out CheckBox checkbox)
+        {
+            checkbox = GetAllControls<CheckBox>().Where(x => x.Name == "chk" + search).FirstOrDefault();
+
+            return (checkbox == null) ? false : true;
+        }
+
+        private List<T> GetAllControls<T>() where T : Control
+        {
+            var list = new List<T>();
+
+            foreach (var control in Controls.OfType<T>())
+                list.Add(control);
+
+            foreach (TabPage tab in tabControl1.TabPages)
+            {
+                foreach (var control in tab.Controls.OfType<T>())
+                    list.Add(control);
+
+                foreach (var groupbox in tab.Controls.OfType<GroupBox>())
+                    foreach (var control in groupbox.Controls.OfType<T>())
+                        list.Add(control);
+            }
+
+            return list;
+        }
+
+        //form methods
+        private void btnOK_Click(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.SettingsValue = Base62.Parse(txtValue.Text);
+            Properties.Settings.Default.Save();
 
             DialogResult = DialogResult.OK;
         }
 
-        private void btn_Import_Click(object sender, EventArgs e)
+        private void btnImport_Click(object sender, EventArgs e)
         {
-            var dialog = new ImportDialog();
-
-            dialog.ShowDialog();
-
-            if (dialog.DialogResult == DialogResult.OK)
+            using (var dialog = new ImportDialog())
             {
-                mask = dialog.Mask;
-                LoadSettings();
-            }
+                dialog.ShowDialog();
 
-            dialog.Dispose();
+                if (dialog.DialogResult == DialogResult.OK)
+                    LoadSettings(dialog.SettingsValue);
+            }
         }
 
-        private void LoadSettings()
+        private void checkBox_CheckedChanged(object sender, EventArgs e)
         {
-            var settingsMask = (SettingsMask)mask;
-            var settings = settingsMask.ToString().Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            var checkbox = (CheckBox)sender;
 
-            foreach (var combobox in Controls.OfType<ComboBox>())
-                combobox.SelectedIndex = 0;
-
-            foreach (var checkbox in Controls.OfType<CheckBox>())
-                checkbox.Checked = false;
-
-            foreach (var setting in settings)
+            if (checkbox.Checked)
             {
-                if (setting.Contains("SelectedROM"))
-                {
-                    cmb_SelectedROM.SelectedIndex = Convert.ToInt32(setting.Split('_')[1]);
-                }
-                else
-                {
-                    CheckBox checkbox = null;
-                    if (GetCheckBox(setting, ref checkbox))
-                        checkbox.Checked = true;
-                }
-            }
-
-            CheckControls();
-            UpdateMask();
-        }
-
-        private void UpdateMask()
-        {
-            var sb = new StringBuilder();
-
-            foreach (var setting in new RandomizerSettings())
-            {
-                CheckBox checkbox = null;
-                if (GetCheckBox(setting.Name, ref checkbox))
-                {
-                    if (checkbox.Checked)
-                        sb.Append(checkbox.Name.Replace("chk_", "") + ", ");
-                }
-
-                ComboBox combobox = null;
-                if (GetComboBox(setting.Name, ref combobox))
-                {
-                    sb.Append(combobox.Name.Replace("cmb_", "") + "_" + combobox.SelectedIndex + ", ");
-                }
-            }
-
-            if (Enum.TryParse(sb.ToString().Trim(',', ' '), out SettingsMask settingsMask))
-                mask = (int)settingsMask;
-
-            Text = "Settings (Mask = " + mask.ToString() + ")";
-        }
-
-        private void CheckControls()
-        {
-            if (chk_CheckSolvability.Checked)
-            {
-                chk_PairWarps.Checked = true;
-                chk_PairWarps.Enabled = false;
-
-                chk_PreventInaccessible.Checked = true;
-                chk_PreventInaccessible.Enabled = false;
-
-                chk_ExcludeMarinHouse.Checked = false;
-                chk_ExcludeMarinHouse.Enabled = false;
-
-                chk_ExcludeEgg.Checked = false;
-                chk_ExcludeEgg.Enabled = false;
+                if (checkbox.Name == "chkShuffleWarps")
+                    grpWarpOptions.Enabled = true;
+                else if (checkbox.Name == "chkShuffleItems")
+                    grpItemOptions.Enabled = true;
             }
             else
             {
-                chk_PairWarps.Enabled = true;
-                chk_PreventInaccessible.Enabled = true;
-                chk_ExcludeMarinHouse.Enabled = true;
-                chk_ExcludeEgg.Enabled = true;
-            }
-        }
-
-        private void chk_Click(object sender, EventArgs e)
-        {
-            CheckControls();
-            UpdateMask();
-        }
-
-        private bool GetCheckBox(string search, ref CheckBox checkbox)
-        {
-            foreach (CheckBox control in Controls.OfType<CheckBox>())
-            {
-                if (control.Name == "chk_" + search)
-                {
-                    checkbox = control;
-                    return true;
-                }
+                if (checkbox.Name == "chkShuffleWarps")
+                    grpWarpOptions.Enabled = false;
+                else if (checkbox.Name == "chkShuffleItems")
+                    grpItemOptions.Enabled = false;
             }
 
-            return false;
+            UpdateValue();
         }
 
-        private bool GetComboBox(string search, ref ComboBox combobox)
+        private void groupBox_EnabledChanged(object sender, EventArgs e)
         {
-            foreach (ComboBox control in Controls.OfType<ComboBox>())
-            {
-                if (control.Name == "cmb_" + search)
-                {
-                    combobox = control;
-                    return true;
-                }
-            }
+            var groupbox = (GroupBox)sender;
 
-            return false;
+            if (!groupbox.Enabled)
+                foreach (var checkbox in ((GroupBox)sender).Controls.OfType<CheckBox>())
+                    checkbox.Checked = false;
         }
     }
 }

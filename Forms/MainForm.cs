@@ -1,5 +1,4 @@
-﻿using LADXRandomizer.Properties;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -9,86 +8,65 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Linq;
 using System.Text;
-using LADXRandomizer.IO;
+using LADXRandomizer.Properties;
 
 namespace LADXRandomizer
 {
     public partial class MainForm : Form
     {
-        private bool debug = true;
-        
-        private RandomizerLog log;
+        private Log log;
         private string filename;
-
-        private Version version => Assembly.GetExecutingAssembly().GetName().Version;
-
         private Stopwatch stopwatch = new Stopwatch();
-        
+
+        private Version version = Assembly.GetExecutingAssembly().GetName().Version;
+
         public MainForm()
         {
             InitializeComponent();
             
-            lbl_Version.Text = "v" + version.ToString(3);
+            lblVersion.Text = "v" + version.ToString(3);
 
-            cmb_Preset.SelectedIndex = 0;
-            btn_Batch.Visible = debug;
-            txt_BatchNum.Visible = debug;
+            cmbPreset.SelectedIndex = 1;
+            btnBulkCreate.Visible = Program.Debug;
+            txtBatchNum.Visible = Program.Debug;
+
+            var settings = (Settings)Properties.Settings.Default.SettingsValue;
+            if (settings.HasFlag(Settings.DebugMode) && !Program.Debug)
+            {
+                settings &= ~Settings.DebugMode;
+                Properties.Settings.Default.SettingsValue = (uint)settings;
+            }
         }
 
-        private void CreateRom(int mask)
+        private void CreateRom(Settings settings)
         {
-            log = new RandomizerLog();
+            var rom = new ROMBuffer(Resources.romJ10);
+            var seed = Randomizer.GetSeed(txtSeed.Text);
+            var rng = new MT19937_64(Base62.Parse(seed));
+
+            log = new Log(seed, settings);
             log.UpdateLog += log_onUpdateLog;
+            log.Print("Seed: " + seed, "Settings: " + Base62.ToBase62((uint)settings), "");
 
-            //var settings = new RandomizerSettings(mask);
-            var settings = new RandomizerSettings(385);
+            rom.ApplySettings(settings);
+            rom.ApplyScreenEdits();
 
-            var seed = Randomizer.GetSeed(txt_Seed.Text);
-            var rng = new MT19937(seed);
-
-            log.Write(LogMode.Output, "Seed: " + seed.ToString("X8"));
-            
-            (var warpList, var success) = Randomizer.GenerateData(rng, settings, log);
-
-            //stopwatch.Restart();
-            //randomizer.GenerateData();
-            //stopwatch.Stop();
-            //log.Write(LogMode.Info, "", "DONE! (" + stopwatch.ElapsedMilliseconds.ToString() + "ms)", "<l1>");
-
-            log.LogSettings(settings);
-
-            foreach (var warp1 in warpList.Overworld1)
+            if (settings.HasFlag(Settings.ShuffleWarps))
             {
-                var warp2 = warp1.GetDestinationWarp();
-
-                string text1 = "[" + warp1.Code + "] " + warp1.Description;
-
-                string text2 = "";
-                if (warp2 != null)
-                    text2 = "[" + warp2.Code + "] " + warp2.Description;
-
-                log.Write(LogMode.Spoiler, text1 + "\r\n    ^=> " + text2 + "\r\n");
+                log.Print("Shuffling warps...");
+                (var warpList, var success) = Randomizer.ShuffleWarps(rng, settings, log);
+                rom.UpdateWarps(warpList);
+                log.RecordWarps(warpList, settings);
             }
 
-            foreach (var warp1 in warpList.Overworld2) //temp
-            {
-                var warp2 = warp1.GetDestinationWarp();
+            if (true)
+                Randomizer.ShuffleThemes(rng, ref rom);
 
-                string text1 = "[" + warp1.Code + "] " + warp1.Description;
-
-                string text2 = "";
-                if (warp2 != null)
-                    text2 = "[" + warp2.Code + "] " + warp2.Description;
-
-                log.Write(LogMode.Spoiler, text1 + "\r\n    ^=> " + text2 + "\r\n");
-            }
-
-            filename = "[V" + version.ToString(1) + "] - " + seed.ToString("X8");
-
-            RandomizerIO.WriteRom(warpList, seed, settings, filename);
+            filename = "V" + version.ToString(1) + "_" + seed;
+            rom.Save(filename, settings);
         }
 
-        private void BatchTest()
+        private void BulkCreate()
         {
             //if (!int.TryParse(txt_BatchNum.Text, out int tests))
             //    return;
@@ -111,105 +89,71 @@ namespace LADXRandomizer
         //event methods//
         private void log_onUpdateLog(object sender, LogArgs e)
         {
-            if (e.doClear)
-                txt_Log.Clear();
-
-            txt_Log.SynchronizedInvoke(() => txt_Log.AppendText(e.Message));
+            txtLog.SynchronizedInvoke(() => txtLog.AppendText(e.Message));
         }
 
-        //UI methods//
-        private async void btn_Create_Click(object sender, EventArgs e)
+        //form methods//
+        private async void btnCreate_Click(object sender, EventArgs e)
         {
-            txt_Log.Clear();
+            txtLog.Clear();
 
-            btn_Create.Enabled = false;
-            btn_Settings.Enabled = false;
-            btn_SaveLog.Enabled = false;
-            chk_FullLog.Enabled = false;
-            cmb_Preset.Enabled = false;
-            lbl_LogSaved.Visible = false;
+            btnCreateROM.Enabled = false;
+            btnCustomize.Enabled = false;
+            btnSaveSpoiler.Enabled = false;
+            btnBulkCreate.Enabled = false;
+            cmbPreset.Enabled = false;
 
-            int mask = 1;
-            if (cmb_Preset.SelectedIndex == 2) //custom settings
-                mask = Settings.Default.OptionsMask;
+            Settings settings = 0;
+            if (cmbPreset.SelectedIndex == 1) //custom settings
+                settings = (Settings)Properties.Settings.Default.SettingsValue;
+            else if (Enum.TryParse(cmbPreset.SelectedItem.ToString(), out SettingPreset preset))
+                settings = (Settings)preset;
+
+            if (Program.GetFrameworkVersion() < 460798)
+                txtLog.AppendText("ERROR: This program requires .Net Framework 4.7 or later.\n(https://www.microsoft.com/net/download/framework)");
             else
-                mask = (int)Enum.Parse(typeof(Preset), cmb_Preset.SelectedItem.ToString());
-            
-            await Task.Run(() => CreateRom(mask));
+            {
+                progressBar1.Style = ProgressBarStyle.Marquee;
+                stopwatch.Restart();
+                await Task.Run(() => CreateRom(settings));
+                stopwatch.Stop();
+                progressBar1.Style = ProgressBarStyle.Continuous;
 
-            if (chk_FullLog.Checked)
-                txt_Log.Text = log.FullLog;
+                log.Print("DONE! (" + stopwatch.ElapsedMilliseconds + "ms)");
+            }
 
             //txt_Log.SelectionStart = 0;
             //txt_Log.ScrollToCaret();
 
-            btn_Create.Enabled = true;
-            btn_SaveLog.Enabled = true;
-            chk_FullLog.Enabled = true;
-            cmb_Preset.Enabled = true;
-            if (cmb_Preset.SelectedIndex == 2)
-                btn_Settings.Enabled = true;
+            btnCreateROM.Enabled = true;
+            btnCustomize.Enabled = true;
+            btnSaveSpoiler.Enabled = true;
+            btnBulkCreate.Enabled = true;
+            cmbPreset.Enabled = true;
         }
 
-        private void btn_Settings_Click(object sender, EventArgs e)
+        private void btnCustomize_Click(object sender, EventArgs e)
         {
-            var dialog = new SettingsDialog(Settings.Default.OptionsMask);
+            cmbPreset.SelectedIndex = 1;
 
-            dialog.ShowDialog();
-            dialog.Dispose();
+            using (var dialog = new SettingsDialog(Properties.Settings.Default.SettingsValue))
+                dialog.ShowDialog();
         }
 
-        private void btn_SaveLog_Click(object sender, EventArgs e)
+        private void btnSaveLog_Click(object sender, EventArgs e)
         {
-            RandomizerIO.SaveLog(log, filename);
-            lbl_LogSaved.Visible = true;
+            log.Save(filename);
+            log.Print("Spoiler successfully saved!");
         }
 
-        private void btn_Batch_Click(object sender, EventArgs e)
+        private void cmbPreset_SelectedIndexChanged(object sender, EventArgs e)
         {
-            BatchTest();
+            //update displayed mask
         }
 
-        private void cmb_Preset_SelectedIndexChanged(object sender, EventArgs e)
+        private void btnBatch_Click(object sender, EventArgs e)
         {
-            if (cmb_Preset.SelectedIndex == 2)
-                btn_Settings.Enabled = true;
-            else
-                btn_Settings.Enabled = false;
+            BulkCreate();
         }
-    }
-
-    public static class ExtensionMethods
-    { 
-        //thread-safe invoke//
-        public static void SynchronizedInvoke(this ISynchronizeInvoke sync, Action action)
-        {
-            if (!sync.InvokeRequired)
-            {
-                action();
-                return;
-            }
-            
-            sync.Invoke(action, null);
-        }
-
-        //get random item from a list//
-        public static T Random<T>(this IEnumerable<T> list, MT19937 rng) => list.ElementAt(rng.Next(list.Count()));
-
-        ////randomly shuffle the items in a list//
-        //public static List<T> Shuffle<T>(this List<T> oldList, MT19937 rng)
-        //{
-        //    int count = oldList.Count;
-        //    var newList = new List<T>(oldList);
-        //    for (int i = 0; i < count - 1; i++)
-        //    {
-        //        int k = rng.Next(i, count);
-        //        T temp = newList[i];
-        //        newList[i] = newList[k];
-        //        newList[k] = temp;
-        //    }
-
-        //    return newList;
-        //}
     }
 }

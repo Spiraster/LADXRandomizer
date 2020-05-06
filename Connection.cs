@@ -12,7 +12,7 @@ namespace LADXRandomizer
         {
             get
             {
-                if (this.Exists(x => x.Direction == Connection.Inward))
+                if (Exists(x => x.Direction == Connection.Inward))
                     return this.Where(x => x.Direction == Connection.Inward).ToList();
                 else
                     return new ConnectionList();
@@ -23,7 +23,7 @@ namespace LADXRandomizer
         {
             get
             {
-                if (this.Exists(x => x.Direction == Connection.Outward))
+                if (Exists(x => x.Direction == Connection.Outward))
                     return this.Where(x => x.Direction == Connection.Outward).ToList();
                 else
                     return new ConnectionList();
@@ -33,13 +33,13 @@ namespace LADXRandomizer
         public void Remove(int zone)
         {
             foreach (var connection in this.Where(x => x.Zone == zone).ToList())
-                this.Remove(connection);
+                Remove(connection);
         }
 
         public void Remove(string code)
         {
             foreach (var connection in this.Where(x => x.Code == code).ToList())
-                this.Remove(connection);
+                Remove(connection);
         }
 
         public void RemoveConstraint(Enum flag)
@@ -51,8 +51,8 @@ namespace LADXRandomizer
 
     public class Connection
     {
-        public static readonly bool Inward = true;
-        public static readonly bool Outward = false;
+        public const bool Inward = true;
+        public const bool Outward = false;
 
         public int Zone { get; }
         public string Code { get; }

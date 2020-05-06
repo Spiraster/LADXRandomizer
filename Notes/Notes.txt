@@ -1,56 +1,76 @@
-﻿Seed Issues:
-[ ] 51FBA927 - infinite loop
+﻿Things that may be required by the logic:
+- SJs (incl. naked)
 
-To Do:
-[ ] Replace 'requiredWarps' with a list of tuples containing every possible constraint and the warps(/zone) associated with it
-[ ] Make it possible to get Trendy Game powder if you have the mushroom
-[ ] Code cleanup:
-	[x] Replace 'map' with 'screen'
-	[x] Change MapIndex to Index in Warp
-	[x] Rename: Warp -> WarpData, and WarpData -> WarpList
-	[x] Remove old commented code
-	[ ] Remove unnecessary "this." calls
-	[ ] Use WarpData.World where possible instead of Code.Contains
-	[ ] Generate WarpData.Code in contructor rather than passing it (if Code is even needed at all)
-	[ ] Update indexer for WarpList and ItemList to take string identifier and parse into World and Index
-	[ ] Replace private fields in ScreenData with get-only properties
-	[ ] Make sure code is properly organized in classes and files
+Seed Issues:
+[ ] 51FBA927 - infinite loop (D1 locked behind D7 entrance)
+
+------------
+-- To-do: --
+------------
+[ ] Implement item locations into pathfinding
+	- have pathfinder track these constraints as well
+	- use these instead of 'requiredWarps' list
 [ ] Create separate logics (excel connections & pathfinder)
 	[ ] Speedrunner
 	[ ] Casual
-[ ] Change the "RandomizeWarps" setting; it needs to be higher-level
-	- establish design for this setting for future randomization options (e.g. random music, palettes, items, etc.)
+[ ] Get unpaired warps working
+[ ] Don't render followers in D0
+[x] Make D4 warps active immediately after opening cutscene
+[ ] Code cleanup:
+	[ ] Use WarpData.World where possible instead of Code.Contains
+	[ ] Generate WarpData.Code in contructor rather than passing it (if Code is even needed at all)
+	[ ] Update indexer for WarpList and ItemList to take string identifier and parse into World and Index
+	- Simplify ScreenData class:
+		[ ] Move GetCollisionOffset and GetSpriteOffset methods into ROMBuffer
+		[ ] Move the various offset calculations into aforementioned methods
+	[ ] Why do NextCollisionOffset and GetWarpOffset loop differently?
+	[ ] Tidy Settings and ROMBuffer.ApplySettings()
+[ ] Randomize dungeon palettes
+[ ] Randomly replace tiles and palettes with sets from the oracles
+[ ] Randomize soundtracks
 [ ] Randomize and/or create random solutions for the egg maze
-[ ] Turn the warp writing code in WriteRom into a local method (for the sake of MapIndex vs MapIndex2)
-	- probably do this for the rest of WriteRom
 [ ] Add/remove bomb triggers
-[ ] Make it possible to jump off waterfalls without the flippers
 [ ] Possibly add staircase to rapids ride warp
-[ ] Solve issue with non-sidescroll warps in dungeons being saved (e.g. D3)
+[ ] Increase wallet to 4-digits
 [ ] Update pathfinding
-	[x] Add l2 shield
 	[ ] Add golden leaves
 	[ ] Add mermaid scale
 	[ ] Add boomerang
-	[ ] Add ghost
 	[ ] Add trade items
 	[ ] Rooster can replace need for OW feather (w/ bracelet)
 	[ ] Bananas can give access to Zone 9 w/o flippers
-[ ] Update settings code and UI
-[ ] Redo log writing and saving
-	- add error log?
+[x] Add support for custom chest event locations
+	[x] Convert all key drops into chests
+[ ] Patch heart graphics to look like Oracles hearts
+[ ] Find patch to make bombs/arrows/powder limitless
+[ ] Patch wrong warping
+[ ] Activate ocarina menu on button press rather than hover
 
 Future Plans:
 [ ] Rename warp codes properly for OW and UWs (and adjust OW2 descriptions)
 [ ] Renumber the OW zones
 [ ] Properly add ignored warps to randomizer and exclude them until sorted out
 
-[x] Press 'Enter' to create seed if textbox has focus
-[ ] Figure out namespaces
-[ ] Rework settings customization
-[x] Rename all uses of "address" in code to "offset"
+- Ideas for game modes:
+	[ ] Make each intrument reveal one of the 8 egg directions (either replace instrument sprites or find way to tie it to the book)
+	[ ] Make each telephone booth reveal one of the egg directions (intruments may not be required to beat the game)
+	[ ] Make only a select few (i.e. 3) instruments required to open the egg, and place WHICH instruments in the book
+	[ ] Place the instruments directly in the phone booths
 
-[ ] (Re-)implement softlock-free logic
+[ ] Find way to disable dialog without breaking functionality
+	- other option is to just reduce dialog text
+[ ] Add seed hash to title screen (as with ALttP)
+[ ] Create output hash based on the randomized elements (use to check for collisions in bulk tests)
+[ ] Remove side of MeowMeow's house on doghouse screen
+[ ] Switch to U1.0 instead of J1.0
+[ ] Add 'Dungeon Guantlet' mode
+[ ] Add option to shuffle dungeon/cave stairs
+[ ] Find way to shuffle portals
+	
+[ ] Add item randomization
+	- Begin with only shuffling items within dungeons
+
+[ ] (Re-)implement softlock-free logic?
 	[ ] Make sword pickup mandatory before exploring
 	[ ] Add map edits for Zone 10
 	[ ] Force deadends behind bombable caves instead of opening them
@@ -61,33 +81,6 @@ Future Plans:
 		[ ] stone-covered entrances (force deadends)
 		[ ] prevent flock clipping dream shrine and woods cave??
 		[ ] Mamu's cave (force deadend)
-
-- Ideas for game modes:
-	[ ] Make each intrument reveal one of the 8 egg directions (either replace instrument sprites or find way to tie it to the book)
-	[ ] Make each telephone booth reveal one of the egg directions (intruments may not be required to beat the game)
-	[ ] Make only a select few (i.e. 1 or 2) instruments required to open the egg, and place WHICH instruments in the book
-[ ] Add option to disable dialog
-[ ] Add seed hash to title screen (as with ALttP)
-[ ] Try to fix waterfall warps immediately after unlock
-[ ] Remove side of MeowMeow's house on doghouse screen
-[x] Add a mechanic to return to base spawn (for use in case of softlock)
-[ ] Get it working with U1.0
-[ ] Add 'Hard' preset (checked for solvability like 'Standard' but warps are unpaired)
-[ ] Add 'Dungeon Guantlet' preset once details are worked out
-[ ] Add option to shuffle dungeon/cave stairs
-[ ] Add option to shuffle portals
-[ ] Write enabled options to ROM (0xFF000)
-[ ] Create output hash based on the randomized elements (can be used to tell duplicate randomizations from different seeds)
-	- Use hashids to generate unique identifier (for use on title screen)
-[ ] Update hashing methods to be more secure (for potential race ROMs):
-	- Use Murmur (or ticks) as initial seed
-	- Generate hash using SHA-256
-	- Seed MT with the SHA hash
-	- Use hashids to shorten SHA hash (as output string)
-[ ] Update the ROM's global checksum (eventhough it doesn't matter)
-	
-[ ] Add chest randomization
-	- Begin with only shuffling items within dungeons
 	
 Ignored warps:
 - Village well
@@ -98,7 +91,7 @@ Ignored warps:
 - (Pit to flooded cave)
 
 Known Issues:
-- "Glitchless" logic still account for bombs at walrus
+- "Glitchless" logic still accounts for bombs at walrus
 - "Glitchless" logic likely has gaps in D8
 - D7 entrance and mermaid cave connections aren't properly accounted for (due to outward softlocks)
 - Shuffling the mermaid cave can result in a glitched ML
@@ -109,14 +102,10 @@ Known Issues:
 - It may be required to enter D0 entrance, but be unable to get rid of bow wow (or another follower)
 - D7 instrument clears the rooster, which may be required (glitchless)
 - Bowwow prevents trading for the monkey bridge (not currently in logic)
-- Rapids ride is currently unaccounted for
+- Rapids ride is currently unaccounted for as a connection
+- Richard won't move before bowwow has been rescued
 		
 Notes:
 - "Glitchless" logic still assumes knowledge of:
 	- walrus skip
 	- bombable walls in D8 (and bomb-arrows)
-
-People to contact:
-- MrC0rrupted (twitch)
-- Hectate (discord)
-- zelgadissan (twitch)

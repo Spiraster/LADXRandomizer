@@ -29,163 +29,491 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsDialog));
-            this.btn_OK = new System.Windows.Forms.Button();
-            this.btn_Cancel = new System.Windows.Forms.Button();
-            this.btn_Import = new System.Windows.Forms.Button();
-            this.cmb_SelectedROM = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.chk_ExcludeMarinHouse = new System.Windows.Forms.CheckBox();
-            this.chk_ExcludeEgg = new System.Windows.Forms.CheckBox();
-            this.chk_PreventDefaultWarps = new System.Windows.Forms.CheckBox();
-            this.chk_PreventInaccessible = new System.Windows.Forms.CheckBox();
-            this.chk_CheckSolvability = new System.Windows.Forms.CheckBox();
-            this.chk_PairWarps = new System.Windows.Forms.CheckBox();
+            this.btnOK = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabWarps = new System.Windows.Forms.TabPage();
+            this.grpWarpOptions = new System.Windows.Forms.GroupBox();
+            this.chkExcludeEgg = new System.Windows.Forms.CheckBox();
+            this.chkExcludeHouse = new System.Windows.Forms.CheckBox();
+            this.chkPairWarps = new System.Windows.Forms.CheckBox();
+            this.chkShuffleWarps = new System.Windows.Forms.CheckBox();
+            this.tabItems = new System.Windows.Forms.TabPage();
+            this.grpItemOptions = new System.Windows.Forms.GroupBox();
+            this.chkShuffleItems = new System.Windows.Forms.CheckBox();
+            this.tabMisc = new System.Windows.Forms.TabPage();
+            this.grpMiscScreenEdits = new System.Windows.Forms.GroupBox();
+            this.chkRemoveOwls = new System.Windows.Forms.CheckBox();
+            this.chkPreventWaterSoftlocks = new System.Windows.Forms.CheckBox();
+            this.chkRemoveHouseMarin = new System.Windows.Forms.CheckBox();
+            this.chkCoverD7Pit = new System.Windows.Forms.CheckBox();
+            this.grpMiscPatches = new System.Windows.Forms.GroupBox();
+            this.chkPatchD0Entrance = new System.Windows.Forms.CheckBox();
+            this.chkPatchTrendy = new System.Windows.Forms.CheckBox();
+            this.chkPatchWaterfalls = new System.Windows.Forms.CheckBox();
+            this.chkDisableLanmolasPit = new System.Windows.Forms.CheckBox();
+            this.chkDisableBirdKeyPits = new System.Windows.Forms.CheckBox();
+            this.chkPatchEggMaze = new System.Windows.Forms.CheckBox();
+            this.chkPatchSlimeKey = new System.Windows.Forms.CheckBox();
+            this.chkPatchWarpSaving = new System.Windows.Forms.CheckBox();
+            this.chkDisableBowwowKids = new System.Windows.Forms.CheckBox();
+            this.chkPatchSignpostMaze = new System.Windows.Forms.CheckBox();
+            this.chkPatchGhost = new System.Windows.Forms.CheckBox();
+            this.chkHouseWarp = new System.Windows.Forms.CheckBox();
+            this.lblMask = new System.Windows.Forms.Label();
+            this.txtValue = new System.Windows.Forms.TextBox();
+            this.btnImport = new System.Windows.Forms.Button();
+            this.chkDebugMode = new System.Windows.Forms.CheckBox();
+            this.tabControl1.SuspendLayout();
+            this.tabWarps.SuspendLayout();
+            this.grpWarpOptions.SuspendLayout();
+            this.tabItems.SuspendLayout();
+            this.tabMisc.SuspendLayout();
+            this.grpMiscScreenEdits.SuspendLayout();
+            this.grpMiscPatches.SuspendLayout();
             this.SuspendLayout();
             // 
-            // btn_OK
+            // btnOK
             // 
-            this.btn_OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btn_OK.Location = new System.Drawing.Point(131, 187);
-            this.btn_OK.Name = "btn_OK";
-            this.btn_OK.Size = new System.Drawing.Size(75, 23);
-            this.btn_OK.TabIndex = 0;
-            this.btn_OK.Text = "OK";
-            this.btn_OK.UseVisualStyleBackColor = true;
-            this.btn_OK.Click += new System.EventHandler(this.btn_OK_Click);
+            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnOK.Location = new System.Drawing.Point(147, 482);
+            this.btnOK.Name = "btnOK";
+            this.btnOK.Size = new System.Drawing.Size(75, 23);
+            this.btnOK.TabIndex = 0;
+            this.btnOK.Text = "OK";
+            this.btnOK.UseVisualStyleBackColor = true;
+            this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
-            // btn_Cancel
+            // btnCancel
             // 
-            this.btn_Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btn_Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btn_Cancel.Location = new System.Drawing.Point(212, 187);
-            this.btn_Cancel.Name = "btn_Cancel";
-            this.btn_Cancel.Size = new System.Drawing.Size(75, 23);
-            this.btn_Cancel.TabIndex = 1;
-            this.btn_Cancel.Text = "Cancel";
-            this.btn_Cancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnCancel.Location = new System.Drawing.Point(228, 482);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(75, 23);
+            this.btnCancel.TabIndex = 1;
+            this.btnCancel.Text = "Cancel";
+            this.btnCancel.UseVisualStyleBackColor = true;
             // 
-            // btn_Import
+            // tabControl1
             // 
-            this.btn_Import.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btn_Import.Location = new System.Drawing.Point(6, 187);
-            this.btn_Import.Name = "btn_Import";
-            this.btn_Import.Size = new System.Drawing.Size(75, 23);
-            this.btn_Import.TabIndex = 6;
-            this.btn_Import.Text = "Import...";
-            this.btn_Import.UseVisualStyleBackColor = true;
-            this.btn_Import.Click += new System.EventHandler(this.btn_Import_Click);
+            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControl1.Controls.Add(this.tabWarps);
+            this.tabControl1.Controls.Add(this.tabItems);
+            this.tabControl1.Controls.Add(this.tabMisc);
+            this.tabControl1.Location = new System.Drawing.Point(5, 32);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(301, 445);
+            this.tabControl1.TabIndex = 7;
             // 
-            // cmb_SelectedROM
+            // tabWarps
             // 
-            this.cmb_SelectedROM.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmb_SelectedROM.FormattingEnabled = true;
-            this.cmb_SelectedROM.Items.AddRange(new object[] {
-            "v1.0 (J)",
-            "v1.0 (U)",
-            "v1.2 (U)"});
-            this.cmb_SelectedROM.Location = new System.Drawing.Point(118, 8);
-            this.cmb_SelectedROM.Name = "cmb_SelectedROM";
-            this.cmb_SelectedROM.Size = new System.Drawing.Size(121, 21);
-            this.cmb_SelectedROM.TabIndex = 3;
-            this.cmb_SelectedROM.SelectedIndexChanged += new System.EventHandler(this.chk_Click);
+            this.tabWarps.Controls.Add(this.grpWarpOptions);
+            this.tabWarps.Controls.Add(this.chkShuffleWarps);
+            this.tabWarps.Location = new System.Drawing.Point(4, 22);
+            this.tabWarps.Name = "tabWarps";
+            this.tabWarps.Padding = new System.Windows.Forms.Padding(3);
+            this.tabWarps.Size = new System.Drawing.Size(293, 419);
+            this.tabWarps.TabIndex = 0;
+            this.tabWarps.Text = "Warps";
+            this.tabWarps.UseVisualStyleBackColor = true;
             // 
-            // label1
+            // grpWarpOptions
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 11);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(100, 13);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "Select ROM to use:";
+            this.grpWarpOptions.Controls.Add(this.chkExcludeEgg);
+            this.grpWarpOptions.Controls.Add(this.chkExcludeHouse);
+            this.grpWarpOptions.Controls.Add(this.chkPairWarps);
+            this.grpWarpOptions.Enabled = false;
+            this.grpWarpOptions.Location = new System.Drawing.Point(3, 23);
+            this.grpWarpOptions.Name = "grpWarpOptions";
+            this.grpWarpOptions.Size = new System.Drawing.Size(285, 92);
+            this.grpWarpOptions.TabIndex = 1;
+            this.grpWarpOptions.TabStop = false;
+            this.grpWarpOptions.Text = "Options";
+            this.grpWarpOptions.EnabledChanged += new System.EventHandler(this.groupBox_EnabledChanged);
             // 
-            // chk_ExcludeMarinHouse
+            // chkExcludeEgg
             // 
-            this.chk_ExcludeMarinHouse.AutoSize = true;
-            this.chk_ExcludeMarinHouse.Location = new System.Drawing.Point(12, 127);
-            this.chk_ExcludeMarinHouse.Name = "chk_ExcludeMarinHouse";
-            this.chk_ExcludeMarinHouse.Size = new System.Drawing.Size(161, 17);
-            this.chk_ExcludeMarinHouse.TabIndex = 2;
-            this.chk_ExcludeMarinHouse.Text = "Exclude Marin/Tarin\'s house";
-            this.chk_ExcludeMarinHouse.UseVisualStyleBackColor = true;
-            this.chk_ExcludeMarinHouse.Click += new System.EventHandler(this.chk_Click);
+            this.chkExcludeEgg.AutoSize = true;
+            this.chkExcludeEgg.Location = new System.Drawing.Point(6, 65);
+            this.chkExcludeEgg.Name = "chkExcludeEgg";
+            this.chkExcludeEgg.Size = new System.Drawing.Size(160, 17);
+            this.chkExcludeEgg.TabIndex = 0;
+            this.chkExcludeEgg.Text = "Exclude the egg from shuffle";
+            this.chkExcludeEgg.UseVisualStyleBackColor = true;
+            this.chkExcludeEgg.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
             // 
-            // chk_ExcludeEgg
+            // chkExcludeHouse
             // 
-            this.chk_ExcludeEgg.AutoSize = true;
-            this.chk_ExcludeEgg.Location = new System.Drawing.Point(12, 150);
-            this.chk_ExcludeEgg.Name = "chk_ExcludeEgg";
-            this.chk_ExcludeEgg.Size = new System.Drawing.Size(161, 17);
-            this.chk_ExcludeEgg.TabIndex = 2;
-            this.chk_ExcludeEgg.Text = "Exclude the Wind Fish\'s Egg";
-            this.chk_ExcludeEgg.UseVisualStyleBackColor = true;
-            this.chk_ExcludeEgg.Click += new System.EventHandler(this.chk_Click);
+            this.chkExcludeHouse.AutoSize = true;
+            this.chkExcludeHouse.Location = new System.Drawing.Point(6, 42);
+            this.chkExcludeHouse.Name = "chkExcludeHouse";
+            this.chkExcludeHouse.Size = new System.Drawing.Size(190, 17);
+            this.chkExcludeHouse.TabIndex = 0;
+            this.chkExcludeHouse.Text = "Exclude starting house from shuffle";
+            this.chkExcludeHouse.UseVisualStyleBackColor = true;
+            this.chkExcludeHouse.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
             // 
-            // chk_PreventDefaultWarps
+            // chkPairWarps
             // 
-            this.chk_PreventDefaultWarps.AutoSize = true;
-            this.chk_PreventDefaultWarps.Location = new System.Drawing.Point(12, 104);
-            this.chk_PreventDefaultWarps.Name = "chk_PreventDefaultWarps";
-            this.chk_PreventDefaultWarps.Size = new System.Drawing.Size(189, 17);
-            this.chk_PreventDefaultWarps.TabIndex = 2;
-            this.chk_PreventDefaultWarps.Text = "Prevent default warp combinations";
-            this.chk_PreventDefaultWarps.UseVisualStyleBackColor = true;
-            this.chk_PreventDefaultWarps.Click += new System.EventHandler(this.chk_Click);
+            this.chkPairWarps.AutoSize = true;
+            this.chkPairWarps.Location = new System.Drawing.Point(6, 19);
+            this.chkPairWarps.Name = "chkPairWarps";
+            this.chkPairWarps.Size = new System.Drawing.Size(88, 17);
+            this.chkPairWarps.TabIndex = 0;
+            this.chkPairWarps.Text = "Pair all warps";
+            this.chkPairWarps.UseVisualStyleBackColor = true;
+            this.chkPairWarps.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
             // 
-            // chk_PreventInaccessible
+            // chkShuffleWarps
             // 
-            this.chk_PreventInaccessible.AutoSize = true;
-            this.chk_PreventInaccessible.Location = new System.Drawing.Point(12, 81);
-            this.chk_PreventInaccessible.Name = "chk_PreventInaccessible";
-            this.chk_PreventInaccessible.Size = new System.Drawing.Size(201, 17);
-            this.chk_PreventInaccessible.TabIndex = 2;
-            this.chk_PreventInaccessible.Text = "Prevent physically inaccessible areas";
-            this.chk_PreventInaccessible.UseVisualStyleBackColor = true;
-            this.chk_PreventInaccessible.Click += new System.EventHandler(this.chk_Click);
+            this.chkShuffleWarps.AutoSize = true;
+            this.chkShuffleWarps.Location = new System.Drawing.Point(6, 6);
+            this.chkShuffleWarps.Name = "chkShuffleWarps";
+            this.chkShuffleWarps.Size = new System.Drawing.Size(90, 17);
+            this.chkShuffleWarps.TabIndex = 0;
+            this.chkShuffleWarps.Text = "Shuffle warps";
+            this.chkShuffleWarps.UseVisualStyleBackColor = true;
+            this.chkShuffleWarps.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
             // 
-            // chk_CheckSolvability
+            // tabItems
             // 
-            this.chk_CheckSolvability.AutoSize = true;
-            this.chk_CheckSolvability.Location = new System.Drawing.Point(12, 35);
-            this.chk_CheckSolvability.Name = "chk_CheckSolvability";
-            this.chk_CheckSolvability.Size = new System.Drawing.Size(156, 17);
-            this.chk_CheckSolvability.TabIndex = 2;
-            this.chk_CheckSolvability.Text = "Make sure ROM is solvable";
-            this.chk_CheckSolvability.UseVisualStyleBackColor = true;
-            this.chk_CheckSolvability.Click += new System.EventHandler(this.chk_Click);
+            this.tabItems.Controls.Add(this.grpItemOptions);
+            this.tabItems.Controls.Add(this.chkShuffleItems);
+            this.tabItems.Location = new System.Drawing.Point(4, 22);
+            this.tabItems.Name = "tabItems";
+            this.tabItems.Padding = new System.Windows.Forms.Padding(3);
+            this.tabItems.Size = new System.Drawing.Size(293, 419);
+            this.tabItems.TabIndex = 1;
+            this.tabItems.Text = "Items";
+            this.tabItems.UseVisualStyleBackColor = true;
             // 
-            // chk_PairWarps
+            // grpItemOptions
             // 
-            this.chk_PairWarps.AutoSize = true;
-            this.chk_PairWarps.Location = new System.Drawing.Point(12, 58);
-            this.chk_PairWarps.Name = "chk_PairWarps";
-            this.chk_PairWarps.Size = new System.Drawing.Size(133, 17);
-            this.chk_PairWarps.TabIndex = 2;
-            this.chk_PairWarps.Text = "Connect warps in pairs";
-            this.chk_PairWarps.UseVisualStyleBackColor = true;
-            this.chk_PairWarps.Click += new System.EventHandler(this.chk_Click);
+            this.grpItemOptions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpItemOptions.Enabled = false;
+            this.grpItemOptions.Location = new System.Drawing.Point(3, 23);
+            this.grpItemOptions.Name = "grpItemOptions";
+            this.grpItemOptions.Size = new System.Drawing.Size(285, 95);
+            this.grpItemOptions.TabIndex = 1;
+            this.grpItemOptions.TabStop = false;
+            this.grpItemOptions.Text = "Options";
+            this.grpItemOptions.EnabledChanged += new System.EventHandler(this.groupBox_EnabledChanged);
+            // 
+            // chkShuffleItems
+            // 
+            this.chkShuffleItems.AutoSize = true;
+            this.chkShuffleItems.Enabled = false;
+            this.chkShuffleItems.Location = new System.Drawing.Point(6, 6);
+            this.chkShuffleItems.Name = "chkShuffleItems";
+            this.chkShuffleItems.Size = new System.Drawing.Size(86, 17);
+            this.chkShuffleItems.TabIndex = 0;
+            this.chkShuffleItems.Text = "Shuffle items";
+            this.chkShuffleItems.UseVisualStyleBackColor = true;
+            this.chkShuffleItems.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
+            // 
+            // tabMisc
+            // 
+            this.tabMisc.AutoScroll = true;
+            this.tabMisc.Controls.Add(this.grpMiscScreenEdits);
+            this.tabMisc.Controls.Add(this.grpMiscPatches);
+            this.tabMisc.Location = new System.Drawing.Point(4, 22);
+            this.tabMisc.Name = "tabMisc";
+            this.tabMisc.Size = new System.Drawing.Size(293, 419);
+            this.tabMisc.TabIndex = 2;
+            this.tabMisc.Text = "Misc.";
+            this.tabMisc.UseVisualStyleBackColor = true;
+            // 
+            // grpMiscScreenEdits
+            // 
+            this.grpMiscScreenEdits.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpMiscScreenEdits.Controls.Add(this.chkRemoveOwls);
+            this.grpMiscScreenEdits.Controls.Add(this.chkPreventWaterSoftlocks);
+            this.grpMiscScreenEdits.Controls.Add(this.chkRemoveHouseMarin);
+            this.grpMiscScreenEdits.Controls.Add(this.chkCoverD7Pit);
+            this.grpMiscScreenEdits.Location = new System.Drawing.Point(3, 304);
+            this.grpMiscScreenEdits.Name = "grpMiscScreenEdits";
+            this.grpMiscScreenEdits.Size = new System.Drawing.Size(285, 111);
+            this.grpMiscScreenEdits.TabIndex = 1;
+            this.grpMiscScreenEdits.TabStop = false;
+            this.grpMiscScreenEdits.Text = "Screen Edits";
+            // 
+            // chkRemoveOwls
+            // 
+            this.chkRemoveOwls.AutoSize = true;
+            this.chkRemoveOwls.Location = new System.Drawing.Point(6, 88);
+            this.chkRemoveOwls.Name = "chkRemoveOwls";
+            this.chkRemoveOwls.Size = new System.Drawing.Size(103, 17);
+            this.chkRemoveOwls.TabIndex = 0;
+            this.chkRemoveOwls.Text = "Remove all owls";
+            this.chkRemoveOwls.UseVisualStyleBackColor = true;
+            this.chkRemoveOwls.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
+            // 
+            // chkPreventWaterSoftlocks
+            // 
+            this.chkPreventWaterSoftlocks.AutoSize = true;
+            this.chkPreventWaterSoftlocks.Location = new System.Drawing.Point(6, 42);
+            this.chkPreventWaterSoftlocks.Name = "chkPreventWaterSoftlocks";
+            this.chkPreventWaterSoftlocks.Size = new System.Drawing.Size(157, 17);
+            this.chkPreventWaterSoftlocks.TabIndex = 0;
+            this.chkPreventWaterSoftlocks.Text = "Prevent flipperless softlocks";
+            this.chkPreventWaterSoftlocks.UseVisualStyleBackColor = true;
+            this.chkPreventWaterSoftlocks.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
+            // 
+            // chkRemoveHouseMarin
+            // 
+            this.chkRemoveHouseMarin.AutoSize = true;
+            this.chkRemoveHouseMarin.Location = new System.Drawing.Point(6, 65);
+            this.chkRemoveHouseMarin.Name = "chkRemoveHouseMarin";
+            this.chkRemoveHouseMarin.Size = new System.Drawing.Size(154, 17);
+            this.chkRemoveHouseMarin.TabIndex = 0;
+            this.chkRemoveHouseMarin.Text = "Remove opening cutscene";
+            this.chkRemoveHouseMarin.UseVisualStyleBackColor = true;
+            this.chkRemoveHouseMarin.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
+            // 
+            // chkCoverD7Pit
+            // 
+            this.chkCoverD7Pit.AutoSize = true;
+            this.chkCoverD7Pit.Location = new System.Drawing.Point(6, 19);
+            this.chkCoverD7Pit.Name = "chkCoverD7Pit";
+            this.chkCoverD7Pit.Size = new System.Drawing.Size(116, 17);
+            this.chkCoverD7Pit.TabIndex = 0;
+            this.chkCoverD7Pit.Text = "Cover pit below D7";
+            this.chkCoverD7Pit.UseVisualStyleBackColor = true;
+            this.chkCoverD7Pit.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
+            // 
+            // grpMiscPatches
+            // 
+            this.grpMiscPatches.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpMiscPatches.Controls.Add(this.chkPatchD0Entrance);
+            this.grpMiscPatches.Controls.Add(this.chkPatchTrendy);
+            this.grpMiscPatches.Controls.Add(this.chkPatchWaterfalls);
+            this.grpMiscPatches.Controls.Add(this.chkDisableLanmolasPit);
+            this.grpMiscPatches.Controls.Add(this.chkDisableBirdKeyPits);
+            this.grpMiscPatches.Controls.Add(this.chkPatchEggMaze);
+            this.grpMiscPatches.Controls.Add(this.chkPatchSlimeKey);
+            this.grpMiscPatches.Controls.Add(this.chkPatchWarpSaving);
+            this.grpMiscPatches.Controls.Add(this.chkDisableBowwowKids);
+            this.grpMiscPatches.Controls.Add(this.chkPatchSignpostMaze);
+            this.grpMiscPatches.Controls.Add(this.chkPatchGhost);
+            this.grpMiscPatches.Controls.Add(this.chkHouseWarp);
+            this.grpMiscPatches.Location = new System.Drawing.Point(3, 3);
+            this.grpMiscPatches.Name = "grpMiscPatches";
+            this.grpMiscPatches.Size = new System.Drawing.Size(285, 295);
+            this.grpMiscPatches.TabIndex = 0;
+            this.grpMiscPatches.TabStop = false;
+            this.grpMiscPatches.Text = "Patches";
+            // 
+            // chkPatchD0Entrance
+            // 
+            this.chkPatchD0Entrance.AutoSize = true;
+            this.chkPatchD0Entrance.Location = new System.Drawing.Point(6, 134);
+            this.chkPatchD0Entrance.Name = "chkPatchD0Entrance";
+            this.chkPatchD0Entrance.Size = new System.Drawing.Size(232, 17);
+            this.chkPatchD0Entrance.TabIndex = 1;
+            this.chkPatchD0Entrance.Text = "Allow access to D0 entrance with a follower";
+            this.chkPatchD0Entrance.UseVisualStyleBackColor = true;
+            // 
+            // chkPatchTrendy
+            // 
+            this.chkPatchTrendy.AutoSize = true;
+            this.chkPatchTrendy.Location = new System.Drawing.Point(6, 203);
+            this.chkPatchTrendy.Name = "chkPatchTrendy";
+            this.chkPatchTrendy.Size = new System.Drawing.Size(275, 17);
+            this.chkPatchTrendy.TabIndex = 1;
+            this.chkPatchTrendy.Text = "Allow acquiring Trendy Game powder with mushroom";
+            this.chkPatchTrendy.UseVisualStyleBackColor = true;
+            // 
+            // chkPatchWaterfalls
+            // 
+            this.chkPatchWaterfalls.AutoSize = true;
+            this.chkPatchWaterfalls.Location = new System.Drawing.Point(6, 180);
+            this.chkPatchWaterfalls.Name = "chkPatchWaterfalls";
+            this.chkPatchWaterfalls.Size = new System.Drawing.Size(271, 17);
+            this.chkPatchWaterfalls.TabIndex = 1;
+            this.chkPatchWaterfalls.Text = "Allow jumping off waterfalls without flippers (incl. raft)";
+            this.chkPatchWaterfalls.UseVisualStyleBackColor = true;
+            // 
+            // chkDisableLanmolasPit
+            // 
+            this.chkDisableLanmolasPit.AutoSize = true;
+            this.chkDisableLanmolasPit.Location = new System.Drawing.Point(6, 272);
+            this.chkDisableLanmolasPit.Name = "chkDisableLanmolasPit";
+            this.chkDisableLanmolasPit.Size = new System.Drawing.Size(149, 17);
+            this.chkDisableLanmolasPit.TabIndex = 0;
+            this.chkDisableLanmolasPit.Text = "Disable Lanmolas pit warp";
+            this.chkDisableLanmolasPit.UseVisualStyleBackColor = true;
+            this.chkDisableLanmolasPit.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
+            // 
+            // chkDisableBirdKeyPits
+            // 
+            this.chkDisableBirdKeyPits.AutoSize = true;
+            this.chkDisableBirdKeyPits.Location = new System.Drawing.Point(6, 249);
+            this.chkDisableBirdKeyPits.Name = "chkDisableBirdKeyPits";
+            this.chkDisableBirdKeyPits.Size = new System.Drawing.Size(184, 17);
+            this.chkDisableBirdKeyPits.TabIndex = 0;
+            this.chkDisableBirdKeyPits.Text = "Disable pit warps in bird key cave";
+            this.chkDisableBirdKeyPits.UseVisualStyleBackColor = true;
+            this.chkDisableBirdKeyPits.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
+            // 
+            // chkPatchEggMaze
+            // 
+            this.chkPatchEggMaze.AutoSize = true;
+            this.chkPatchEggMaze.Location = new System.Drawing.Point(6, 88);
+            this.chkPatchEggMaze.Name = "chkPatchEggMaze";
+            this.chkPatchEggMaze.Size = new System.Drawing.Size(271, 17);
+            this.chkPatchEggMaze.TabIndex = 0;
+            this.chkPatchEggMaze.Text = "Prevent the egg maze from having a default solution";
+            this.chkPatchEggMaze.UseVisualStyleBackColor = true;
+            this.chkPatchEggMaze.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
+            // 
+            // chkPatchSlimeKey
+            // 
+            this.chkPatchSlimeKey.AutoSize = true;
+            this.chkPatchSlimeKey.Location = new System.Drawing.Point(6, 157);
+            this.chkPatchSlimeKey.Name = "chkPatchSlimeKey";
+            this.chkPatchSlimeKey.Size = new System.Drawing.Size(236, 17);
+            this.chkPatchSlimeKey.TabIndex = 0;
+            this.chkPatchSlimeKey.Text = "Prevent slime key softlock following villa skip";
+            this.chkPatchSlimeKey.UseVisualStyleBackColor = true;
+            this.chkPatchSlimeKey.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
+            // 
+            // chkPatchWarpSaving
+            // 
+            this.chkPatchWarpSaving.AutoSize = true;
+            this.chkPatchWarpSaving.Location = new System.Drawing.Point(6, 42);
+            this.chkPatchWarpSaving.Name = "chkPatchWarpSaving";
+            this.chkPatchWarpSaving.Size = new System.Drawing.Size(222, 17);
+            this.chkPatchWarpSaving.TabIndex = 0;
+            this.chkPatchWarpSaving.Text = "Save D6 and D8 back exit warps on S+Q";
+            this.chkPatchWarpSaving.UseVisualStyleBackColor = true;
+            this.chkPatchWarpSaving.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
+            // 
+            // chkDisableBowwowKids
+            // 
+            this.chkDisableBowwowKids.AutoSize = true;
+            this.chkDisableBowwowKids.Location = new System.Drawing.Point(6, 226);
+            this.chkDisableBowwowKids.Name = "chkDisableBowwowKids";
+            this.chkDisableBowwowKids.Size = new System.Drawing.Size(239, 17);
+            this.chkDisableBowwowKids.TabIndex = 0;
+            this.chkDisableBowwowKids.Text = "Disable kids conversation after D1 instrument";
+            this.chkDisableBowwowKids.UseVisualStyleBackColor = true;
+            this.chkDisableBowwowKids.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
+            // 
+            // chkPatchSignpostMaze
+            // 
+            this.chkPatchSignpostMaze.AutoSize = true;
+            this.chkPatchSignpostMaze.Location = new System.Drawing.Point(6, 65);
+            this.chkPatchSignpostMaze.Name = "chkPatchSignpostMaze";
+            this.chkPatchSignpostMaze.Size = new System.Drawing.Size(266, 17);
+            this.chkPatchSignpostMaze.TabIndex = 0;
+            this.chkPatchSignpostMaze.Text = "Prevent signpost maze from becoming inaccessible";
+            this.chkPatchSignpostMaze.UseVisualStyleBackColor = true;
+            this.chkPatchSignpostMaze.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
+            // 
+            // chkPatchGhost
+            // 
+            this.chkPatchGhost.AutoSize = true;
+            this.chkPatchGhost.Location = new System.Drawing.Point(6, 111);
+            this.chkPatchGhost.Name = "chkPatchGhost";
+            this.chkPatchGhost.Size = new System.Drawing.Size(264, 17);
+            this.chkPatchGhost.TabIndex = 0;
+            this.chkPatchGhost.Text = "Allow access to dungeon entrances with the ghost";
+            this.chkPatchGhost.UseVisualStyleBackColor = true;
+            this.chkPatchGhost.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
+            // 
+            // chkHouseWarp
+            // 
+            this.chkHouseWarp.AutoSize = true;
+            this.chkHouseWarp.Location = new System.Drawing.Point(6, 19);
+            this.chkHouseWarp.Name = "chkHouseWarp";
+            this.chkHouseWarp.Size = new System.Drawing.Size(117, 17);
+            this.chkHouseWarp.TabIndex = 0;
+            this.chkHouseWarp.Text = "Enable house warp";
+            this.chkHouseWarp.UseVisualStyleBackColor = true;
+            this.chkHouseWarp.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
+            // 
+            // lblMask
+            // 
+            this.lblMask.AutoSize = true;
+            this.lblMask.Location = new System.Drawing.Point(10, 9);
+            this.lblMask.Name = "lblMask";
+            this.lblMask.Size = new System.Drawing.Size(37, 13);
+            this.lblMask.TabIndex = 8;
+            this.lblMask.Text = "Value:";
+            // 
+            // txtValue
+            // 
+            this.txtValue.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtValue.Location = new System.Drawing.Point(52, 5);
+            this.txtValue.Name = "txtValue";
+            this.txtValue.ReadOnly = true;
+            this.txtValue.Size = new System.Drawing.Size(40, 23);
+            this.txtValue.TabIndex = 9;
+            this.txtValue.Text = "0";
+            this.txtValue.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // btnImport
+            // 
+            this.btnImport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnImport.Location = new System.Drawing.Point(6, 483);
+            this.btnImport.Name = "btnImport";
+            this.btnImport.Size = new System.Drawing.Size(75, 23);
+            this.btnImport.TabIndex = 10;
+            this.btnImport.Text = "Import...";
+            this.btnImport.UseVisualStyleBackColor = true;
+            this.btnImport.Click += new System.EventHandler(this.btnImport_Click);
+            // 
+            // chkDebugMode
+            // 
+            this.chkDebugMode.AutoSize = true;
+            this.chkDebugMode.Enabled = false;
+            this.chkDebugMode.Location = new System.Drawing.Point(99, 9);
+            this.chkDebugMode.Name = "chkDebugMode";
+            this.chkDebugMode.Size = new System.Drawing.Size(87, 17);
+            this.chkDebugMode.TabIndex = 11;
+            this.chkDebugMode.Text = "Debug mode";
+            this.chkDebugMode.UseVisualStyleBackColor = true;
+            this.chkDebugMode.Visible = false;
+            this.chkDebugMode.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
             // 
             // SettingsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(293, 216);
+            this.ClientSize = new System.Drawing.Size(309, 511);
             this.ControlBox = false;
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.chk_ExcludeMarinHouse);
-            this.Controls.Add(this.btn_Import);
-            this.Controls.Add(this.cmb_SelectedROM);
-            this.Controls.Add(this.chk_PairWarps);
-            this.Controls.Add(this.chk_ExcludeEgg);
-            this.Controls.Add(this.btn_Cancel);
-            this.Controls.Add(this.chk_CheckSolvability);
-            this.Controls.Add(this.btn_OK);
-            this.Controls.Add(this.chk_PreventInaccessible);
-            this.Controls.Add(this.chk_PreventDefaultWarps);
+            this.Controls.Add(this.chkDebugMode);
+            this.Controls.Add(this.btnImport);
+            this.Controls.Add(this.txtValue);
+            this.Controls.Add(this.lblMask);
+            this.Controls.Add(this.tabControl1);
+            this.Controls.Add(this.btnCancel);
+            this.Controls.Add(this.btnOK);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SettingsDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Settings";
+            this.tabControl1.ResumeLayout(false);
+            this.tabWarps.ResumeLayout(false);
+            this.tabWarps.PerformLayout();
+            this.grpWarpOptions.ResumeLayout(false);
+            this.grpWarpOptions.PerformLayout();
+            this.tabItems.ResumeLayout(false);
+            this.tabItems.PerformLayout();
+            this.tabMisc.ResumeLayout(false);
+            this.grpMiscScreenEdits.ResumeLayout(false);
+            this.grpMiscScreenEdits.PerformLayout();
+            this.grpMiscPatches.ResumeLayout(false);
+            this.grpMiscPatches.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -193,16 +521,40 @@
 
         #endregion
 
-        private System.Windows.Forms.Button btn_OK;
-        private System.Windows.Forms.Button btn_Cancel;
-        private System.Windows.Forms.Button btn_Import;
-        private System.Windows.Forms.ComboBox cmb_SelectedROM;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.CheckBox chk_ExcludeMarinHouse;
-        private System.Windows.Forms.CheckBox chk_ExcludeEgg;
-        private System.Windows.Forms.CheckBox chk_PreventDefaultWarps;
-        private System.Windows.Forms.CheckBox chk_PreventInaccessible;
-        private System.Windows.Forms.CheckBox chk_CheckSolvability;
-        private System.Windows.Forms.CheckBox chk_PairWarps;
+        private System.Windows.Forms.Button btnOK;
+        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tabWarps;
+        private System.Windows.Forms.GroupBox grpWarpOptions;
+        private System.Windows.Forms.CheckBox chkShuffleWarps;
+        private System.Windows.Forms.TabPage tabItems;
+        private System.Windows.Forms.GroupBox grpItemOptions;
+        private System.Windows.Forms.CheckBox chkShuffleItems;
+        private System.Windows.Forms.TabPage tabMisc;
+        private System.Windows.Forms.Label lblMask;
+        private System.Windows.Forms.TextBox txtValue;
+        private System.Windows.Forms.CheckBox chkPairWarps;
+        private System.Windows.Forms.CheckBox chkExcludeEgg;
+        private System.Windows.Forms.CheckBox chkExcludeHouse;
+        private System.Windows.Forms.GroupBox grpMiscPatches;
+        private System.Windows.Forms.CheckBox chkDisableLanmolasPit;
+        private System.Windows.Forms.CheckBox chkDisableBirdKeyPits;
+        private System.Windows.Forms.CheckBox chkPatchEggMaze;
+        private System.Windows.Forms.CheckBox chkPatchSlimeKey;
+        private System.Windows.Forms.CheckBox chkPatchWarpSaving;
+        private System.Windows.Forms.CheckBox chkDisableBowwowKids;
+        private System.Windows.Forms.CheckBox chkPatchSignpostMaze;
+        private System.Windows.Forms.CheckBox chkPatchGhost;
+        private System.Windows.Forms.CheckBox chkHouseWarp;
+        private System.Windows.Forms.GroupBox grpMiscScreenEdits;
+        private System.Windows.Forms.CheckBox chkRemoveOwls;
+        private System.Windows.Forms.CheckBox chkPreventWaterSoftlocks;
+        private System.Windows.Forms.CheckBox chkRemoveHouseMarin;
+        private System.Windows.Forms.CheckBox chkCoverD7Pit;
+        private System.Windows.Forms.Button btnImport;
+        private System.Windows.Forms.CheckBox chkDebugMode;
+        private System.Windows.Forms.CheckBox chkPatchTrendy;
+        private System.Windows.Forms.CheckBox chkPatchWaterfalls;
+        private System.Windows.Forms.CheckBox chkPatchD0Entrance;
     }
 }

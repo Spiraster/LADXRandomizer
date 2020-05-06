@@ -1,0 +1,186 @@
+=Palette Pointers= (@21:43EF)
+D1: 5FE0
+D2: 6120
+D3: 61D0
+D4: 62C0
+D5: 63B0
+D6: 6500
+D7: 6650
+D8: 66B0
+Egg: 6820
+
+=Override Pointers=
+D1: 5FE0, 6080
+    - changes BG6 (entrance mat, crystals)
+D3: 61D0, 6270
+    - changes BG0 (entrance mat, obstacles)
+D4: 62C0, 6360
+    - changes BG0 (crystals, pots)
+D5: 63B0, 6450, 64A0
+    - changes BG6 (entrance mat, crystals, pots)
+D7: 65B0, 6650, (6600)
+    - changes BG7 (entrance mat, pits)
+
+=Palette Use= [wall, floor1, floor2, floor3]
+D1: 4, 5, 7, 0
+D2: 4, 5, 7, 5
+D3: 4, 5, 7, (0)
+D4: 4, 5, 6, (5)
+D5: 4, 5, 0, (0)
+D6: 4, 5, 6, 5
+D7: 4, 5, 0, 0
+D8: 4, 5, 6, 0
+Egg: 4, 5, 7, (0)
+
+=Palettes=
+General: FF 47 F3 51 67 28 00 00 (BG1)
+         FF 47 17 14 08 10 00 00 (BG2)
+         FF 47 D9 11 CE 10 00 00 (BG3)
+         ?? ?? D9 11 CE 10 00 00 (pots)
+         0D 76 45 7D A4 3C 00 00 (water)
+         ?? ?? C4 26 21 15 00 00 (obstacles)
+
+D1: 7F 5A DF 38 12 0C 00 00 [4] (walls)
+    87 7D E6 44 0D 76 00 00 [5] (floor1; light accent)
+    52 4A CE 39 29 25 00 00 [7] (floor2)
+    FF 47 C4 26 21 15 00 00 [0] (floor3/statues/pits)
+    87 7D 16 7E 8D 38 00 00 [6] (crystals)
+    FF 47 C4 26 E2 19 E0 0C [6] (entrance)
+
+D2: 12 7F E7 7C 00 34 00 00 [4] (walls)
+    BA 3A 70 09 C9 08 00 00 [5] (floor1/floor3)
+    18 5B 0A 5E E0 5C 00 00 [7] (floor2)
+    57 2E                   [6] (pots)
+    94 7E CD 7D 65 34 00 00 [0] (rising floors)
+
+D3: 36 47 4E 26 46 01 00 00 [4] (walls)
+    10 16 29 01 72 1A 00 00 [5] (floor1; light accent)
+    4F 52 67 39 C2 2C 00 00 [7] (floor2)
+    default                 [6] (pots)
+    default                 [0] (obstacles)
+    FF 47 45 7D A4 3C 62 20 [0] (entrance)
+
+D4: DE 73 A0 3A 40 15 00 00 [4] (walls)
+    52 16 6B 15 A5 04 00 00 [5] (floor1)
+    E0 77 00 3A 40 21 00 00 [6] (floor2)
+    default                 [7] (water)
+    default                 [0] (pots)
+    52 16 16 7E 6C 60 00 00 [0] (crystals)
+
+D5: D7 52 91 29 EC 14 00 00 [4] (walls)
+    74 02 6B 01 19 23 00 00 [5] (floor1; light accent)
+    74 02 C4 26 21 15 00 00 [0] (floor2)
+    default                 [0] (obstacles)
+    default                 [7] (water)
+    default                 [6] (pots)
+    74 02 16 7E 6C 60 00 00 [6] (crystals)
+    FF 47 10 16 29 01 A5 00 [6] (entrance)
+
+D6: DE 73 BE 51 14 30 00 00 [4] (walls)
+    52 2E AD 01 C6 00 00 00 [5] (floor1/floor3)
+    3F 36 5A 25 AF 14 00 00 [6] (floor2)
+    default                 [7] (water)
+    default                 [0] (pots)
+
+D7: 39 67 52 4A 29 25 00 00 [4] (walls)
+    A7 01 02 01 2B 02 00 00 [5] (floor1; light accent)
+    A7 01 EC 71 A4 3C 00 00 [0] (floor2/floor3)
+    default                 [6] (pots)
+    FF 47 2B 49 67 28 00 00 [7] (pits)
+    FF 47 D6 29 2E 1D 86 0C [7] (entrance)
+
+D8: 1F 31 15 00 0B 00 00 00 [4] (walls)
+    9F 02 DF 00 53 00 00 00 [5] (floor1)
+    FF 47 3F 09 09 00 00 00 [6] (floor2)
+    9F 02 D9 11 CE 10 00 00 [0] (pots/floor3)
+
+=Tile Palette Locations=
++ 0x18 [06] (lava)
++ 0x1C [07] (floor3)
++ 0x38 [0E] (deep water)
++ 0x3C [0F] (floor2)
++ 0x6C [1B] (shallow water)
++ 0x70 [1C] (speckled pits; 4 tiles)
++ 0x80 [20] (pot)
++ 0x13C [4F] (obstacle)
++ 0x22C [8B] (solid floor2)
++ 0x238 [8E] (pot switch)
++ 0x288 [A2] (wall stairs down)
++ 0x28C [A3] (wall stairs up)
++ 0x290 [A4] (boss door; 2 tiles)
++ 0x2B8 [AE] (pits; 3 tiles)
++ 0x2CC [B3] (entrance; 11 tiles)
++ 0x300 [C0] (statue)
++ 0x350 [D4] (spikes)
++ 0x368 [DA] (flying tile)
++ 0x36C [DB] (rising floors; 2 tiles)
++ 0x374 [DD] (crystal)
+
+Issues:
+- override palettes
+- object palettes 
+    - flying powder
+    - D6 elephant statues (D1)
+- wrong obstacles before D3 boss?? (0x88 instead of 0x4F)
+- 2D sections are using the wrong palettes
+    - D4 and D7 bosses most importantly
+- possibly do something about the D2 floor contrast?
+- tile palettes:
+    - all:
+        - flying tiles (must account for object palette)
+        - obstacles/crystals? (find solution with overrides)
+        - D7 special tiles (0x8B)
+        - lava
+    - D1:
+        - entrance
+        - pots
+        - pot-covered switch (0x8E)
+        - water
+        - wall stairs
+    - D2:
+        - pot switch
+        - spikes?
+    - D3:
+        - entrance
+        - water
+        - pot switch
+        - wall stairs
+        - spikes
+    - D4:
+        - upward stairs
+        - moving floors (ala D3)
+        - wall stairs
+        - spikes
+    - D5:
+        - spin doors
+        - floor2 looks gross
+            - ok: D7, (D8)
+            - bad: (D2), D3/D6
+            - passable: D1, (D4)
+        - pot switch
+        - wall stairs
+        - spikes
+    - D6:
+        - upward stairs
+        - spikes
+    - D7:
+        - floor2 looks gross
+            - bad: D1, D2, D3/D6, D4
+            - passable: D5, D8
+        - water
+        - pot switch
+    - D8:
+        - floor2 looks bad
+        - spikes?
+    - Egg:
+        - too much
+
+floors vs colours
+        light    dark
+D1      [y]     [y]
+D2      [n]     [y]
+D3/D6   [y]     [y]
+D4      [n]     [y]
+D5      [y]     [n]
+D7      [y]     [y]
+D8      [n]     [y]

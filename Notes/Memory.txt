@@ -1,35 +1,102 @@
-﻿ROM2:4000 - table containing per-screen music tracks for the OW
-ROM2:79DA - table containing the 4 egg maze patters (8 bytes each)
+﻿ROM0:080C - function; switches bank and returns (necessary to reload the calling bank before returning)
+ROM0:081D - function; same as above but preserves af register
+ROM0:0CC7 - function; used to set-up temporary animations (i.e. a splash)
+ROM0:3AA8 - part of larger function (starting at 0x3A1D); switches banks and jumps to hl
+
+=Functions=
+ROM0:08A4 - checks for new sounds and/or music to load
+ROM0:2919 - loads palettes for next screen into WRAM (at DC10)
+ROM0:32AE - function that applies collision data (at least in dungeons) [0x32AE - 0x353F]
+				- skip entrance (0xE1) drawing for certain screens (i.e. 0x0E) @3517
+ROM1:455F - loading of filenames from SRAM into WRAM
+ROM1:46C6 - loading of debug file into SRAM if debug flag is set
+ROM1:4AE3 - near the beginning of the file creation function
+				- checks for ZERUDA__ @4AF3
+				- checks for TOTAKEKE_ @4B14
+				- create file @4B32
+ROM21:4120 - load default dungeon palette
+ROM21:5185 - queue palette override based on submap, screen, and transition direction (sets DDD2)
+
+=Data=
+ROM1:4671 - table containing inventory and dungeon item bytes for debug file
+ROM1:59A8 - table of values corresponding to points of interest on the minimap (text and symbol?)
+ROM2:4000 - table containing per-screen music tracks for the OW
+ROM2:79DA - table containing the 4 egg maze patterns (8 bytes each)
+ROM7:7653 - 4-byte table containing horsehead outcomes
+ROM14:4000 - room event data for both UWs (0x100 each)
+ROM1A:6076 - pointers to tile data (not graphics) for dungeons
+ROM21:42B1 - overworld palette pointers
+ROM21:42EF - overworld palette indices
+ROM21:43EF - pointers to default dungeon palettes
+ROM21:523A - table for loading palette overrides(?) within dungeons
+ROM21:51F6 - table of pointers to actual colours for palette overrides(?)
+ROM23:4000 - tile data for dungeons (lower nibble specifies palette 0-7; 0x20 = hflip, 0x40 = vflip)
+				- 4 bytes per game tile (i.e. 4 VRAM tiles)
 
 C125 - direction of screen transition (updates on transition)
-			- 0x00 = right, 0x01 = left, 0x02 = up, 0x03 = down
+			- 0x00 = right, 0x01 = left, 0x02 = up, 0x03 = down, 0x04 = warp
 C13D - random number storage
 C173 - text to load
 		- ROM0:2554 is where it gets read to print the text
+C18E - event data for current room
 ?? C2EF - bomb timer
+C51F - type of queued animation (i.e. 01 = splash; 03 = chest animation)
+C52F - current frame of queued animation
+C53F - X-pos of animation (in pixels)
+C54F - Y-pos of animation (in pixels)
 C5AA - counter for correct egg maze transitions
+D368 - next music track to play
+D369 - current music track
 DB44 - shield level (affects Marin and Tarin)
 DB4B - mushroom flag (0x00 = powder, 0x01 = mushroom)
 DB4E - sword level (affects Marin and Tarin)
-DB56 - bow wow byte
+DB56 - bow wow flag
 		- set to 0x80 after D1 instrument (triggers kids cutscene)
 		- set to 0x01 after rescuing bow wow
 		- returns to 0x00 after returning bow wow
-DB79 - ghost byte
-DB7C - egg maze byte
+DB73 - marin flag
+DB79 - ghost flag
+DB7B - rooster flag
+DB7C - egg maze flag
 		- gets set when reading the book with the ML (0x00, 0x08, 0x10 or 0x18)
 		- undergoes 3 right shifts before loading book text
 DB8F/DB90 - rupees to gain
 DB91/DB92 - rupees to lose
+DBA5 - underworld flag
+DBAE - current submap position
+DBAF - last loaded ROM bank
 
+FF94 - loaded graphic set
 FFB0 - current music track
-FFCB - inputs (1 bit per input)
+FFCB - input bit mask (→ = 0x01; ← = 0x02; ↑ = 0x04; ↓ = 0x08; A = 0x10; B = 0x20; SL = 0x40; ST = 0x80)
 FFE7 - frame counter
+FFE9 - link's current tile position
+?? FFE9 - floor tile for current screen (only during transitions)
 FFF6 - current map tile
 FFF7 - current submap/palette
 FFF8 - bit flags for current map tile
 
+from jiggly (U 1.2):
+0x9FC5 - event triggers
+0x9D88 - events
+
 Notes:
 - Egg maze pattern text locations:
 	- J 1.0: 0x51FDA, 0x52016, 0x52052, 0x5208E
-	- U 1.0: 0x76A4E, 0x76ABC, 0x76B2A, 0x76B98 
+	- U 1.0: 0x76A4E, 0x76ABC, 0x76B2A, 0x76B98
+
+List of unused HRAM addresses:
+FF86
+FF8A
+FF8C
+FF8E
+FF95
+FFB5
+FFCA
+FFD3
+FFD4
+FFD5
+FFD6
+FFDD
+FFDE
+FFFC

@@ -7,7 +7,7 @@ namespace LADXRandomizer
 {
     public static class Pathfinding
     {
-        private static readonly string start = "OW2-A2";
+        private const string start = "OW2-A2";
 
         public static List<WarpData> Map(WarpList warpList)
         {
@@ -43,7 +43,7 @@ namespace LADXRandomizer
                 //update output log
                 if (count > 0)
                 {
-                    sb.AppendLine("\r\n\r\n" + count.ToString() + "\r\n");
+                    sb.AppendLine("\r\n\r\nPass #" + count.ToString() + "\r\n");
                     sb.AppendLine("INVENTORY:");
                     foreach (var item in inventory.ToEnumList().Except(oldInventory.ToEnumList()))
                         sb.Append(item.ToString() + ", ");
@@ -356,7 +356,7 @@ namespace LADXRandomizer
 
         public BraceletLocation BraceletLocation { get; set; }
 
-        public bool ContainsAnyDamageItem => this.Contains(Items.Sword) || this.Contains(Items.Bow) || this.Contains(Items.Hookshot) || this.Contains(Items.MagicRod);
+        public bool ContainsAnyDamageItem => Contains(Items.Sword) || Contains(Items.Bow) || Contains(Items.Hookshot) || Contains(Items.MagicRod);
         
         public FlagsCollection() { }
 

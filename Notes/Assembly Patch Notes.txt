@@ -1,0 +1,260 @@
+=========================
+= Custom Code Framework =
+=========================
+(@0:0008)
+F5          push af
+3E 3E       ld  a,3E
+EA 00 21    ld  (2100),a
+F1          pop af
+C3 00 40    jp  4000
+
+(@3E:4000)
+E5          push hl
+D5          push de
+16 00       ld  d,00
+1E 40       ld  e,40
+21 00 40    ld  hl,4000
+19          add hl,de
+3D          dec a
+20 FC       jr  nz,*4007
+D1          pop de
+E9          jp  hl
+
+Notes: - Use by loading an index into A (blocks of 0x40) and calling RST 08
+       - Must POP HL at destination
+
+==========================
+= Custom Chest Locations =
+==========================
+--Original--
+(@0:3468)
+F1          pop af
+F0 E9       ld  a,(ff00+E9)
+F5          push af
+
+(@0:3535)
+21 11 D7    ld  hl,D711
+19          add hl,de
+
+(@2:5EEB)
+3E 20       ld  a,20
+E0 CD       ld  (ff00+CD),a
+3E 80       ld  a,80
+E0 CE       ld  (ff00+CE),a
+
+(@2:5EAE)
+3E 88       ld  a,88
+
+(@2:5ECA)
+3E 30       ld  a,30
+
+--New--
+(@0:3468)
+3E 01       ld  a,01
+CF          rst 08
+00          nop
+
+(@3E:4040)
+3E 01       ld  a,01
+E0 DD       ld  (ff00+DD),a
+F8 04       ld  hl,sp+04
+23          inc hl
+3E 0F       ld  a,0F
+77          ld  (hl),a
+E1          pop hl
+18 58       jr *         ;jump to the bank resetting code in 4080
+
+
+(@0:3535)
+3E 02       ld  a,02
+CF          rst 08
+00          nop
+
+(@3E:4080)
+E1          pop hl
+F0 DD       ld  a,(ff00+DD)
+A7          and a
+28 1B       jr  z,*         ;jump if chest flag not set
+AF          xor a
+E0 DD       ld  (ff00+DD),a
+C5          push bc
+06 08       ld  b,08
+0E 10       ld  c,10
+7B          ld  a,e
+E6 F0       and F0
+E0 D3       ld  (ff00+D3),a
+81          add a,c
+E0 D6       ld  (ff00+D6),a
+7B          ld  a,e
+E6 0F       and 0F
+CB 37       swap a
+E0 D4       ld  (ff00+D4),a
+80          add a,b
+E0 D5       ld  (ff00+D5),a
+C1          pop bc
+
+21 11 D7    ld  hl,D711
+19          add hl,de
+
+F5          push af
+FA A5 DB    ld  a,(DBA5)
+A7          and a
+20 0E       jr  nz,*        ;jump if in underworld
+F0 F6       ld  a,(ff00+F6)
+FE 80       cp  a,80
+30 04       jr  nc,*        ;jump if bottom half of OW
+3E 09       ld  a,09
+18 14       jr  *           ;jump to return
+3E 1A       ld  a,1A
+18 10       jr  *           ;jump to return
+F0 F7       ld  a,(ff00+F7)
+FE 06       cp  a,06
+38 08       jr  c,*         ;jump if D1-D5
+FE 1A       cp  a,1A
+30 04       jr  nc,*        ;jump
+3E 0B       ld  a,0B
+18 02       jr  *           ;jump to return
+3E 0A       ld  a,0A
+C3 21 08    jp  0821
+
+(@2:5EEB)
+F0 D3       ld  a,(ff00+D3) ;chest coordinates
+E0 CD       ld  (ff00+CD),a
+F0 D4       ld  a,(ff00+D4)
+E0 CE       ld  (ff00+CE),a
+
+(@2:5EAE)
+F0 D5       ld  a,(ff00+D5) ;animation coordinates
+
+(@2:5ECA)
+F0 D6       ld  a,(ff00+D6)
+
+==============
+= House Warp =
+==============
+--Original--
+(@1:5806)
+FA 03 00    ld  a,(0003)
+A7          and a
+28 3D       jr  z,5849      ;jump if debug not set
+F0 CB       ld  a,(ff00+CB)
+FE 60       cp  a,60
+20 37       jr  nz,5849     ;jump if B+SL not pressed
+3E 0B       ld  a,0B
+EA 95 DB    ld  (DB95),a
+CD 70 0C    call 0C7D
+3E 00       ld  a,00
+EA 01 D4    ld  (D401),a
+EA 02 D4    ld  (D402),a
+FA B4 DB    ld  a,(DBB4)
+EA 03 D4    ld  (D403),a
+3E 48       ld  a,48
+EA 04 D4    ld  (D404),a
+3E 52       ld  a,52
+EA 05 D4    ld  (D405),a
+
+--New--
+(@1:5806)
+00          nop
+00          nop
+00          nop
+00          nop
+00          nop
+F0 CB       ld  a,(ff00+CB)
+FE A0       cp  a,A0
+20 38       jr  nz,*        ;jump if B+ST not pressed
+3E 0B       ld  a,0B
+EA 95 DB    ld  (DB95),a
+CD 7D 0C    call 0C7D
+3E 01       ld  a,01
+EA 01 D4    ld  (D401),a
+3E 10       ld  a,10
+EA 02 D4    ld  (D402),a
+3E A3       ld  a,A3
+EA 03 D4    ld  (D403),a
+3E 50       ld  a,50
+EA 04 D4    ld  (D404),a
+3E 60       ld  a,60
+EA 05 D4    ld  (D405),a
+
+========================
+= Improved Warp Saving =
+========================
+--Original--
+(@0:1993)
+FE 0A       cp  a,0A
+30 2B       jr  nc,19C2
+
+--New--
+(@0:1993)
+3E 04       ld  a,04
+CF          rst 08
+00          nop
+
+(@3E:4100)
+E1          pop hl
+F0 F7       ld  a,(ff00+F7)
+FE 0A       cp  a,0A
+30 16       jr  nc,*        ;jump down if not a dungeon
+FE 05       cp  a,05
+28 03       jr  z,*         ;jump to extra check if D6
+FE 07       cp  a,07
+C0          ret nz          ;return to dungeon code if not D6 or D8
+F0 F6       ld  a,(ff00+F6)
+FE B0       cp  a,B0
+28 09       jr  z,*
+FE 3A       cp  a,3A
+28 05       jr  z,*
+FE 3D       cp  a,3D
+F0 F7       ld  a,(ff00+F7)
+C0          ret nz          ;return to dungeon code if not back stairs
+
+01 C2 19    ld  bc,19C2     ;return to warp saving code
+E8 02       add sp,02
+C5          push bc
+C9          ret
+
+================
+= D4 Warps Fix =
+================
+--Original--
+(@0:3513)
+FE E1       cp  a,E1
+20 0B       jr  nz,3522
+F0 F6       ld  a,(ff00+F6)
+FE 0E       cp  a,0E
+C8          ret z
+FE 0C       cp  a,0C
+C8          ret z
+FE 1B       cp  a,1B
+C8          ret z
+
+F0 F6       ld  a,(ff00+F6)
+FE 80       cp  a,80
+30 04       jr  nc,352C
+3E 09       ld  a,09
+18 02       jr  352E
+3E 1A       ld  a,1A
+CD 2F 0B    call 0B2F
+C9          ret
+
+--New--
+(@0:3513)
+FE E1       cp  a,E1
+28 04       jr  z,351B
+FE C6       cp  a,C6
+20 09       jr  nz,3524
+F0 F6       ld  a,(ff00+F6)
+FE 0E       cp  a,0E
+C8          ret z
+FE 2B       cp  a,2B
+C8          ret z
+00          nop
+
+F0 F6       ld  a,(ff00+F6)
+FE 80       cp  a,80
+3E 09       ld  a,09
+38 02       jr c,352D
+3E 1A       ld  a,1A
+CD 2F 0B    call 0B2F
+C9          ret

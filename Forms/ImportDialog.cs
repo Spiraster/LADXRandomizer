@@ -13,47 +13,42 @@ namespace LADXRandomizer
 {
     public partial class ImportDialog : Form
     {
-        public int Mask { get; set; }
+        private ulong settingsValue;
+        public ulong SettingsValue => settingsValue;
 
         public ImportDialog()
         {
             InitializeComponent();
 
-            cmb_Preset.SelectedIndex = 0;
-            radioButton1.Checked = true;
+            cmbPreset.SelectedIndex = 0;
+            radioValue.Checked = true;
         }
 
         private void btn_OK_Click(object sender, EventArgs e)
         {
-            if (radioButton1.Checked)
+            if (radioValue.Checked)
             {
-                Mask = (int)Enum.Parse(typeof(Preset), cmb_Preset.SelectedItem.ToString());
-                DialogResult = DialogResult.OK;
-            }
-            else if (radioButton2.Checked)
-            {
-                if (!int.TryParse(txt_Mask.Text, out int mask) || mask < 1 || mask > 509)
-                    MessageBox.Show("Mask must be between 1-252.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                else if (((SettingsMask)mask).HasFlag(SettingsMask.SelectedROM_0 | SettingsMask.SelectedROM_1) 
-                         || ((SettingsMask)mask).HasFlag(SettingsMask.SelectedROM_1 | SettingsMask.SelectedROM_2) 
-                         || ((SettingsMask)mask).HasFlag(SettingsMask.SelectedROM_0 | SettingsMask.SelectedROM_2))
-                    MessageBox.Show("The entered mask is invalid.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                else
+                if (Base62.TryParse(txtValue.Text, out ulong value))
                 {
-                    Mask = mask;
+                    if (value >= (ulong)Settings.Max)
+                        value = (ulong)(Settings.Max - 1);
+
+                    settingsValue = value;
                     DialogResult = DialogResult.OK;
                 }
+                else
+                    MessageBox.Show("Entered value contains invalid characters.");
             }
         }
 
         private void cmb_Preset_Enter(object sender, EventArgs e)
         {
-            radioButton1.Checked = true;
+            radioPreset.Checked = true;
         }
 
         private void txt_Mask_Enter(object sender, EventArgs e)
         {
-            radioButton2.Checked = true;
+            radioValue.Checked = true;
         }
     }
 }

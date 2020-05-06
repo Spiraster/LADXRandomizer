@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -11,7 +12,7 @@ namespace LADXRandomizer
 {
     public static class Randomizer
     {
-        private static readonly ReadOnlyCollection<(string Code, Enum Item)> requiredWarps = new List<(string, Enum)>
+        private static IReadOnlyList<(string Code, Enum Item)> requiredWarps = new List<(string, Enum)>
         {
             ("OW2-D3", Items.Feather),      //D1
             ("OW2-24", Items.Bracelet),     //D2
@@ -28,47 +29,13 @@ namespace LADXRandomizer
             ("OW2-93", Items.Bow),          //Shop
             ("OW2-AC", Keys.FaceKey),       //Armos
             ("OW2-0A-2", Keys.BirdKey),     //Bird key cave
-        }.AsReadOnly();
+        };
 
-        public static (WarpList, bool) GenerateData(MT19937 rng, RandomizerSettings settings, RandomizerLog log)
+        public static (WarpList, bool) ShuffleWarps(MT19937_64 rng, Settings settings, Log log)
         {
             var warpList = new WarpList(settings);
 
-            //-- take care of special cases first (D6, D7, D8) --//
-            ////D8
-            //var warpD8b = new Warp();
-            //var warpD8c = new Warp();
-            //if (rng.Next() % 2 == 0)
-            //{
-            //    warpD8b = warpData.Where(x => x.Code.Contains("OW1") && x.DeadEnd && !x.Exclude).Random(rng);
-            //    warpD8c = warpData.Where(x => x.Code.Contains("OW1") && x.DeadEnd && !x.Exclude && x != warpD8b).Random(rng);
-            //}
-            //else
-            //{
-            //    warpD8b = warpData.Where(x => x.Code.Contains("OW1") && x.ZoneConnections.Inward.Count == 0 && x.WarpConnections.Inward.Count == 1 && x.WarpConnections.Outward.Count == 1 && !x.Exclude).Random(rng);
-            //    warpD8c = warpData[warpD8b.WarpConnections.Outward.First().Code];
-            //}
-
-            //warpData["OW2-00"].WarpValue = warpD8b.LocationValue;
-            //warpData["OW2-02"].WarpValue = warpD8c.LocationValue;
-            //warpD8b.WarpValue = warpData["OW2-00"].LocationValue;
-            //warpD8c.WarpValue = warpData["OW2-02"].LocationValue;
-
-            //warpData["OW2-00"].Exclude = true;
-            //warpData["OW2-02"].Exclude = true;
-            //warpD8b.Exclude = true;
-            //warpD8c.Exclude = true;
-
-            ////D6
-            //var warpD6b = warpData.Where(x => x.Code.Contains("OW1") && x.DeadEnd && !x.Exclude).Random(rng);
-
-            //warpData["OW2-6C"].WarpValue = warpD6b.LocationValue;
-            //warpD6b.WarpValue = warpData["OW2-6C"].LocationValue;
-
-            //warpData["OW2-6C"].Exclude = true;
-            //warpD6b.Exclude = true;
-
-            //D7
+            //-- special case for D7 entrance --//
             var warpD7 = warpList.Where(x => x.Code.Contains("OW2") && x.DeadEnd && !x.Exclude).Random(rng);
 
             warpList["OW1-0E"].WarpValue = warpD7.LocationValue;
@@ -76,14 +43,14 @@ namespace LADXRandomizer
 
             warpList["OW1-0E"].Exclude = true;
             warpD7.Exclude = true;
-            //-------------------------------------------------------//
+            //------------------------
 
-            //-- initial shuffling and pairing of warps --//
-            if (settings["RandomizeWarps"].Enabled)
+            //-- initial shuffling of warps --//
+            var ow1Warps = warpList.Where(x => x.Code.Contains("OW1") && !x.Exclude).Shuffle(rng);
+            var ow2Warps = warpList.Where(x => x.Code.Contains("OW2") && !x.Exclude).Shuffle(rng);
+
+            if (settings.HasFlag(Settings.PairWarps))
             {
-                var ow1Warps = warpList.Where(x => x.Code.Contains("OW1") && !x.Exclude).OrderBy(x => rng.Next()).ToList();
-                var ow2Warps = warpList.Where(x => x.Code.Contains("OW2") && !x.Exclude).OrderBy(x => rng.Next()).ToList();
-
                 for (int i = 0; i < ow1Warps.Count; i++)
                 {
                     ow1Warps[i].WarpValue = ow2Warps[i].LocationValue;
@@ -91,8 +58,15 @@ namespace LADXRandomizer
                 }
             }
             else
-                warpList.ForEach(x => x.WarpValue = x.DefaultWarpValue);
-            //--------------------------------------------//
+            {
+                var remainingWarps = warpList.Where(x => !x.Exclude).ToList();
+                var shuffledWarps = ow2Warps.Concat(ow1Warps).ToList();
+
+                //warpList.ForEach(x => x.WarpValue = x.DefaultWarpValue);
+                for (int i = 0; i < remainingWarps.Count; i++)
+                    remainingWarps[i].WarpValue = shuffledWarps[i].LocationValue;
+            }
+            //------------------------
 
             //-- make sure all warps are accessible and seed is solvable --//
             var inventory = new FlagsCollection(new Enum[] { Items.Shield | Items.Sword });
@@ -105,7 +79,7 @@ namespace LADXRandomizer
             {
                 if (count++ > 1000)
                 {
-                    log.Write(LogMode.Output, "ERROR: Infinite loop");
+                    log.Print("ERROR: Generation timed out.");
                     break;
                 }
 
@@ -118,21 +92,21 @@ namespace LADXRandomizer
 
                     if (unreachableWarps.Count != 0) //this temporary bullshit is because of OW2-02
                     {
-                        warp1 = unreachableWarps.Random(rng);
+                        warp2 = unreachableWarps.Random(rng);
 
-                        if (warp1.Code.Contains("OW1"))
-                            warp2 = reachableWarps.Where(x => x.Code.Contains("OW2") && !x.Exclude).Random(rng);
+                        if (warp2.Code.Contains("OW1"))
+                            warp1 = reachableWarps.Where(x => x.Code.Contains("OW2") && !x.Exclude).Random(rng);
                         else
-                            warp2 = reachableWarps.Where(x => x.Code.Contains("OW1") && !x.Exclude).Random(rng);
+                            warp1 = reachableWarps.Where(x => x.Code.Contains("OW1") && !x.Exclude).Random(rng);
 
-                        log.Write(LogMode.Output, "DEBUG: Shuffling an unreachableWarp");
+                        log.Record(LogMode.Debug, "DEBUG: Shuffling an unreachableWarp");
                     }
                     else
                     {
                         //error log
                         var missingWarps = new StringBuilder();
                         warpList.Where(x => !reachableWarps.Contains(x)).ToList().ForEach(x => missingWarps.Append(x.Code + ", "));
-                        log.Write(LogMode.Output, "ERROR: Unable to make all warps accessible", "\t=> Warps: " + reachableWarps.Count.ToString() + "/" + warpList.Count.ToString(), "\t=> " + missingWarps.ToString());
+                        log.Record(LogMode.Debug, "ERROR: Unable to make all warps accessible", "\t=> Warps: " + reachableWarps.Count.ToString() + "/" + warpList.Count.ToString(), "\t=> " + missingWarps.ToString());
                     }
                 }
                 else if (!solvable)
@@ -141,10 +115,10 @@ namespace LADXRandomizer
 
                     if (possibleWarps.Count > 0)
                     {
-                        warp1 = possibleWarps.Random(rng);
-                        warp2 = encounteredWarps.Where(x => x.Code.Contains("OW1") && !x.Exclude).Random(rng);
+                        warp1 = encounteredWarps.Where(x => x.Code.Contains("OW1") && !x.Exclude).Random(rng);
+                        warp2 = possibleWarps.Random(rng);
 
-                        log.Write(LogMode.Output, "DEBUG: Shuffling a possibleWarp (" + warp1.Code + ")");
+                        log.Record(LogMode.Debug, "DEBUG: Shuffling a possibleWarp (" + warp1.Code + ")");
                     }
                     else
                     {
@@ -163,24 +137,32 @@ namespace LADXRandomizer
                             warp2 = possibleWarps.Where(x => x.Code.Contains("OW1") && !x.Exclude).Random(rng);
 
                         //error log
-                        log.Write(LogMode.Output, "ERROR: No possible \"required\" warps");
+                        log.Record(LogMode.Debug, "ERROR: No possible \"required\" warps");
                     }
                 }
 
                 if (warp1 != null && warp2 != null)
                 {
-                    var warp1Destination = warp1.GetDestinationWarp();
-                    var warp2Destination = warp2.GetDestinationWarp();
+                    if (settings.HasFlag(Settings.PairWarps))
+                    {
+                        var warp1Destination = warp1.GetDestinationWarp();
+                        var warp2Destination = warp2.GetDestinationWarp();
 
-                    warp1.WarpValue = warp2.LocationValue;
-                    warp2.WarpValue = warp1.LocationValue;
-                    warp1Destination.WarpValue = warp2Destination.LocationValue;
-                    warp2Destination.WarpValue = warp1Destination.LocationValue;
+                        warp1.WarpValue = warp2.LocationValue;
+                        warp2.WarpValue = warp1.LocationValue;
+                        warp1Destination.WarpValue = warp2Destination.LocationValue;
+                        warp2Destination.WarpValue = warp1Destination.LocationValue;
+                    }
+                    else
+                    {
+                        warp1.WarpValue = warp2.LocationValue;
+                        warp2.GetOriginWarp().WarpValue = warp1.GetDestinationWarp().LocationValue;
+                    }
                 }
                 else
                 {
                     //error log
-                    log.Write(LogMode.Output, "ERROR: Failed to create good seed");
+                    log.Record(LogMode.Debug, "ERROR: Failed to create good seed");
                     break;
                 }
 
@@ -189,45 +171,309 @@ namespace LADXRandomizer
                 reachableWarps = Pathfinding.Map(warpList);
                 solvable = Pathfinding.TrySolve(warpList, ref inventory, out encounteredWarps, out encounteredConstraints, out output);
             }
-            //---------------------------------------//
+            //------------------------
 
             inventory = new FlagsCollection(new Enum[] { Items.Shield | Items.Sword });
             var warps = Pathfinding.Map(warpList);
             var success = Pathfinding.TrySolve(warpList, ref inventory, out encounteredWarps, out encounteredConstraints, out output);
-            log.Write(LogMode.Output, "warps: " + warps.Count.ToString(), "success: " + success.ToString(), output);
+            log.Record(LogMode.Debug, "Warps: " + warps.Count.ToString(), "Success: " + success.ToString());
+            log.Record(LogMode.Pathfinder, "<l1>", "Pathfinder:", "<l1>", output);
 
             return (warpList, success);
         }
 
-        public static int[] GenerateMapEdits(MT19937 rng)
+        public static void ShuffleThemes(MT19937_64 rng, ref ROMBuffer rom)
         {
-            return new int[] 
+            var colourPtrBuffer = new List<byte>();
+            var tilePtrBuffer = new List<byte>();
+            var thirdRowIndexBuffer = new List<byte>();
+            var firstRowIndexBuffer = new List<byte>();
+            var wallsIndexBuffer = new List<byte>();
+            foreach (var theme in new ThemeValues(rng))
             {
-                rng.Next(2),     //0x03/0x13 (left)
-                rng.Next(2),     //0x03/0x13 (right)
-                rng.Next(2),     //0x07
-                rng.Next(2),     //0x09/0x19
-                rng.Next(2),     //0x0E/0x1E (left)
-                rng.Next(2),     //0x0E/0x1E (right)
-                rng.Next(2),     //0x11/0x21 (left)
-                rng.Next(2),     //0x11/0x21 (right)
-                rng.Next(2),     //0x1B/0x2B
-                rng.Next(1, 15), //0x25/0x26/0x27
-                rng.Next(2)      //0x8C/0x9C
-            };
-        }
+                var offset = 0x843EF + theme.Index * 2;
+                colourPtrBuffer.Add(rom[offset]);
+                colourPtrBuffer.Add(rom[offset + 1]);
 
-        public static uint GetSeed(string input)
-        {
-            if (input.Length != 8 || !uint.TryParse(input, NumberStyles.HexNumber, CultureInfo.CurrentCulture, out uint seed))
-            {
-                if (input != "" && input != null)
-                    seed = MurmurHash3.Hash(Encoding.UTF8.GetBytes(input));
-                else
-                    seed = MurmurHash3.Hash(BitConverter.GetBytes(Environment.TickCount));
+                offset = 0x6A076 + theme.Index * 2;
+                tilePtrBuffer.Add(rom[offset]);
+                tilePtrBuffer.Add(rom[offset + 1]);
+
+                offset = 0x80589 + theme.Floors;
+                thirdRowIndexBuffer.Add(rom[offset]);
+
+                firstRowIndexBuffer.Add(theme.Statue);
+
+                wallsIndexBuffer.Add(theme.Walls);
             }
 
-            return seed;
+            rom.Write(0x843EF, colourPtrBuffer);
+            rom.Write(0x6A076, tilePtrBuffer);
+            //rom.Write(0x80589, thirdRowIndexBuffer);
+            //rom.Write(0x805CA, firstRowIndexBuffer);
+            //rom.Write(0x805A9, wallsIndexBuffer);
+
+            //temp
+            rom.Write(0x8518B, 0xC9);
+
+            //patch tiles (0x6A076; 0x8C000)
+            //D1 (0x4000)
+            rom.Write(0x8C018, "02 02 02 02"); //lava
+            rom.Write(0x8C038, "07 07 07 07"); //water
+            rom.Write(0x8C06C, "07 07 07 07");
+            rom.Write(0x8C080, "06 06 06 06"); //pot
+            rom.Write(0x8C238, "06 06 06 06"); //pot switch
+            rom.Write(0x8C22C, "07 07 07 07"); //solid floor2
+            rom.Write(0x8C288, "01 01 01 01"); //wall stairs
+            rom.Write(0x8C28C, "01 01 01 01");
+            rom.Write(0x8C2D2, "00 00"); //entrance
+            rom.Write(0x8C2DC, "00 00 04 00 00 00 00 04");
+
+            //D2 (0x4400)
+            rom.Write(0x8C418, "02 02 02 02"); //lava
+            rom.Write(0x8C62C, "07 07 07 07"); //solid floor2
+            rom.Write(0x8C638, "06 06 06 06"); //pot switch
+            rom.Write(0x8C750, "01 01 01 01"); //spikes
+
+            //D3 (0x5400)
+            rom.Write(0x8D418, "02 02 02 02"); //lava
+            rom.Write(0x8D438, "07 07 07 07"); //water
+            rom.Write(0x8D46C, "07 07 07 07");
+            rom.Write(0x8D62C, "07 07 07 07"); //solid floor2
+            rom.Write(0x8D638, "06 06 06 06"); //pot switch
+            rom.Write(0x8D688, "01 01 01 01"); //wall stairs
+            rom.Write(0x8D68C, "01 01 01 01");
+            rom.Write(0x8D6D2, "07 07"); //entrance
+            rom.Write(0x8D6DC, "07 07 04 07 07 07 07 04");
+            rom.Write(0x8D750, "01 01 01 01"); //spikes
+
+
+            //D4 (0x4800)
+            //D5 (0x5800)
+            //D6 (0x4C00)
+            //D7 (0x5C00)
+            //D8 (0x5000)
+
+        }
+
+        public static string GetSeed(string input)
+        {
+            byte[] inputBytes;
+            if (string.IsNullOrWhiteSpace(input))
+                inputBytes = BitConverter.GetBytes(Environment.TickCount);
+            else
+                inputBytes = Encoding.UTF8.GetBytes(input + Program.Version);
+
+            var hashids = new Hashids(Program.Version, 8);
+            
+            using (var sha256 = new SHA256Managed())
+            {
+                var hash = sha256.ComputeHash(inputBytes);
+
+                var list = new List<ulong>();
+                for (int i = 3; i >= 0; i--)
+                    list.Add(BitConverter.ToUInt64(hash.Reverse().ToArray(), i * 8));
+
+                return hashids.Encode(list);
+            }
         }
     }
+
+    public class ThemeValues : List<(int Index, int Floors, byte Statue, byte Walls)>
+    {
+        private const int totalThemes = 8;
+
+        public ThemeValues(MT19937_64 rng)
+        {
+            foreach (var val in Enumerable.Range(0, totalThemes).Shuffle(rng))
+            {
+                int floors = Enumerable.Range(0, 4).Select(x => (x * 2) + (val % 2))
+                                                   .Where(x => !Exists(y => y.Floors == x))
+                                                   .Random(rng);
+                byte statue = new byte[] { 0x77, 0x78, 0x79 }.Random(rng);
+                byte walls = new byte[] { 0x40, 0x6C, 0x6E, 0x4A }.Random(rng);
+
+                Add((2, floors, statue, walls));
+            }
+        }
+    }
+
+    //public class PaletteInfo : List<PaletteInfo.Dungeon>
+    //{
+    //    public PaletteInfo()
+    //    {
+    //        //D1
+    //        Add(new Dungeon(
+    //                new List<(int, string)>
+    //                {
+    //                    (0x07, "00 00 00 00"),
+    //                    (0x0F, "07 07 07 07"),
+    //                    (0x1C, "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00"),
+    //                    (0xAE, "00 00 00 00 00 00 00 00 00 00 00 00"),
+    //                    (0xB3, "05 01 05 01 01 01 06 06 01 05 01 05 05 01 05 04 06 06 04 06 06 06 06 04 01 05 04 05 04 04 04 04 04 00 04 00 00 04 00 04 04 04 04 04"),
+    //                    (0xC0, "00 00 00 00"),
+    //                    (0xDD, "06 06 06 06")
+    //                },
+    //                new List<(int, string)>
+    //                {
+    //                    (0x5FE0, "FF 47 C4 26 21 15 00 00 FF 47 F3 51 67 28 00 00 FF 47 17 14 08 10 00 00 FF 47 D9 11 CE 10 00 00 7F 5A DF 38 12 0C 00 00 87 7D E6 44 0D 76 00 00 87 7D 16 7E 8D 38 00 00 52 4A CE 39 29 25 00 00"),
+    //                    (0x6080, "FF 47 C4 26 21 15 00 00 FF 47 F3 51 67 28 00 00 FF 47 17 14 08 10 00 00 FF 47 D9 11 CE 10 00 00 7F 5A DF 38 12 0C 00 00 87 7D E6 44 0D 76 00 00 FF 47 C4 26 E2 19 E0 0C 52 4A CE 39 29 25 00 00")
+    //                }
+    //            ));
+    //        //D2
+    //        Add(new Dungeon(
+    //                new List<(int, string)>
+    //                {
+    //                    (0x07, "05 05 05 05"),
+    //                    (0x0F, "07 07 07 07"),
+    //                    (0x20, "06 06 06 06"),
+    //                    (0xAE, "03 03 03 03 03 03 03 03 03 03 03 03"),
+    //                    (0xB3, "05 00 05 00 00 00 04 04 00 05 00 05 05 00 05 04 04 04 04 04 04 04 04 04 00 05 04 05 04 04 04 04 04 04 04 04 04 04 04 04 04 04 04 04"),
+    //                    (0xC0, "01 01 01 01"),
+    //                    (0xDB, "00 00 00 00 00 00 00 00")
+    //                },
+    //                new List<(int, string)>
+    //                {
+    //                    (0x6120, "94 7E CD 7D 65 34 00 00 FF 47 F3 51 67 28 00 00 FF 47 17 14 08 10 00 00 FF 47 D9 11 CE 10 00 00 12 7F E7 7C 00 34 00 00 BA 3A 70 09 C9 08 00 00 57 2E D9 11 CE 10 00 00 18 5B 0A 5E E0 5C 00 00")
+    //                }
+    //            ));
+    //        //D3
+    //        Add(new Dungeon(
+    //                new List<(int, string)>
+    //                {
+    //                    (0x0F, "07 07 07 07"),
+    //                    (0x20, "06 06 06 06"),
+    //                    (0x4F, "00 00 00 00"),
+    //                    (0xAE, "04 04 04 04 04 04 04 04 04 04 04 04"),
+    //                    (0xB3, "05 03 05 03 03 03 00 00 03 05 03 05 05 03 05 04 00 00 04 00 00 00 00 04 03 05 04 05 04 04 04 04 04 00 04 00 00 04 00 04 04 04 04 04"),
+    //                    (0xC0, "01 01 01 01"),
+    //                    (0xDB, "03 03 03 03 03 03 03 03")
+    //                },
+    //                new List<(int, string)>
+    //                {
+    //                    (0x61D0, "10 16 C4 26 21 15 00 00 FF 47 F3 51 67 28 00 00 FF 47 17 14 08 10 00 00 FF 47 D9 11 CE 10 00 00 36 47 4E 26 46 01 00 00 10 16 29 01 72 1A 00 00 10 16 D9 11 CE 10 00 00 4F 52 67 39 C2 2C 00 00"),
+    //                    (0x6270, "FF 47 45 7D A4 3C 62 20 FF 47 F3 51 67 28 00 00 FF 47 17 14 08 10 00 00 FF 47 D9 11 CE 10 00 00 36 47 4E 26 46 01 00 00 10 16 29 01 72 1A 00 00 10 16 D9 11 CE 10 00 00 4F 52 67 39 C2 2C 00 00")
+    //                }
+    //            ));
+    //        //D4
+    //        Add(new Dungeon(
+    //                new List<(int, string)>
+    //                {
+    //                    (0x0F, "06 06 06 06"),
+    //                    (0x1C, "03 03 03 03 03 03 03 03 03 03 03 03 03 03 03 03"),
+    //                    (0x20, "00 00 00 00"),
+    //                    (0xAE, "03 03 03 03 03 03 03 03 03 03 03 03"),
+    //                    (0xB3, "05 06 05 06 06 06 04 04 06 05 06 05 05 06 05 04 04 04 04 04 04 04 04 04 06 05 04 05 04 04 04 04 04 04 04 04 04 04 04 04 04 04 04 04"),
+    //                    (0xC0, "01 01 01 01"),
+    //                    (0xDD, "00 00 00 00")
+    //                },
+    //                new List<(int, string)>
+    //                {
+    //                    (0x62C0, "52 16 D9 11 CE 10 00 00 FF 47 F3 51 67 28 00 00 FF 47 17 14 08 10 00 00 FF 47 D9 11 CE 10 00 00 DE 73 A0 3A 40 15 00 00 52 16 6B 15 A5 04 00 00 E0 77 00 3A 40 21 00 00 0D 76 45 7D A4 3C 00 00"),
+    //                    (0x6360, "52 16 16 7E 6C 60 00 00 FF 47 F3 51 67 28 00 00 FF 47 17 14 08 10 00 00 FF 47 D9 11 CE 10 00 00 DE 73 A0 3A 40 15 00 00 52 16 6B 15 A5 04 00 00 E0 77 00 3A 40 21 00 00 0D 76 45 7D A4 3C 00 00")
+    //                }
+    //            ));
+    //        //D5
+    //        Add(new Dungeon(
+    //                new List<(int, string)>
+    //                {
+    //                    (0x0F, "00 00 00 00"),
+    //                    (0x20, "06 06 06 06"),
+    //                    (0x4F, "00 00 00 00"),
+    //                    (0xAE, "03 03 03 03 03 03 03 03 03 03 03 03"),
+    //                    (0xB3, "05 01 05 01 01 01 06 06 01 05 01 05 05 01 05 04 06 06 04 06 06 06 06 04 01 05 04 05 04 04 04 04 04 06 04 06 06 04 06 04 04 04 04 04"),
+    //                    (0xC0, "01 01 01 01"),
+    //                    (0xDD, "06 06 06 06")
+    //                },
+    //                new List<(int, string)>
+    //                {
+    //                    (0x63B0, "74 02 C4 26 21 15 00 00 FF 47 F3 51 67 28 00 00 FF 47 17 14 08 10 00 00 FF 47 D9 11 CE 10 00 00 D7 52 91 29 EC 14 00 00 74 02 6B 01 19 23 00 00 74 02 D9 11 CE 10 00 00 0D 76 45 7D A4 3C 00 00"),
+    //                    (0x6450, "74 02 C4 26 21 15 00 00 FF 47 F3 51 67 28 00 00 FF 47 17 14 08 10 00 00 FF 47 D9 11 CE 10 00 00 D7 52 91 29 EC 14 00 00 74 02 6B 01 19 23 00 00 FF 47 10 16 29 01 A5 00 0D 76 45 7D A4 3C 00 00"),
+    //                    (0x64A0, "74 02 C4 26 21 15 00 00 FF 47 F3 51 67 28 00 00 FF 47 17 14 08 10 00 00 FF 47 D9 11 CE 10 00 00 D7 52 91 29 EC 14 00 00 74 02 6B 01 19 23 00 00 74 02 16 7E 6C 60 00 00 0D 76 45 7D A4 3C 00 00")
+    //                }
+    //            ));
+    //        //D6
+    //        Add(new Dungeon(
+    //                new List<(int, string)>
+    //                {
+    //                    (0x07, "05 05 05 05"),
+    //                    (0x0F, "06 06 06 06"),
+    //                    (0x20, "00 00 00 00"),
+    //                    (0xAE, "03 03 03 03 03 03 03 03 03 03 03 03"),
+    //                    (0xB3, "05 06 05 06 06 06 04 04 06 05 06 05 05 06 05 04 04 04 04 04 04 04 04 04 06 05 04 05 04 04 04 04 04 04 04 04 04 04 04 04 04 04 04 04"),
+    //                    (0xC0, "01 01 01 01"),
+    //                    (0xDA, "03 03 03 03"),
+    //                    (0xDB, "03 03 03 03 03 03 03 03")
+    //                },
+    //                new List<(int, string)>
+    //                {
+    //                    (0x6500, "52 2E D9 11 CE 10 00 00 FF 47 F3 51 67 28 00 00 FF 47 17 14 08 10 00 00 FF 47 D9 11 CE 10 00 00 DE 73 BE 51 14 30 00 00 52 2E AD 01 C6 00 00 00 3F 36 5A 25 AF 14 00 00 0D 76 45 7D A4 3C 00 00")
+    //                }
+    //            ));
+    //        //D7
+    //        Add(new Dungeon(
+    //                new List<(int, string)>
+    //                {
+    //                    (0x07, "00 00 00 00"),
+    //                    (0x0F, "00 00 00 00"),
+    //                    (0x1C, "07 07 07 07 07 07 07 07 07 07 07 07 07 07 07 07"),
+    //                    (0x20, "06 06 06 06"),
+    //                    (0xAE, "07 07 07 07 07 07 07 07 07 07 07 07"),
+    //                    (0xB3, "05 01 05 01 01 01 07 07 01 05 01 05 05 01 05 04 07 07 04 07 07 07 07 04 01 05 04 05 04 04 04 04 04 07 04 07 07 04 07 04 04 04 04 04"),
+    //                    (0xC0, "03 03 03 03"),
+    //                    (0xDA, "04 04 04 04"),
+    //                    (0xDB, "03 03 03 03 03 03 03 03")
+    //                },
+    //                new List<(int, string)>
+    //                {
+    //                    (0x6650, "A7 01 EC 71 A4 3C 00 00 FF 47 F3 51 67 28 00 00 FF 47 17 14 08 10 00 00 FF 47 D9 11 CE 10 00 00 39 67 52 4A 29 25 00 00 A7 01 02 01 2B 02 00 00 A7 01 D9 11 CE 10 00 00 FF 47 2B 49 67 28 00 00"),
+    //                    (0x65B0, "A7 01 EC 71 A4 3C 00 00 FF 47 F3 51 67 28 00 00 FF 47 17 14 08 10 00 00 FF 47 D9 11 CE 10 00 00 39 67 52 4A 29 25 00 00 A7 01 02 01 2B 02 00 00 A7 01 D9 11 CE 10 00 00 FF 47 D6 29 2E 1D 86 0C")
+    //                }
+    //            ));
+    //        //D8
+    //        Add(new Dungeon(
+    //                new List<(int, string)>
+    //                {
+    //                    (0x07, "00 00 00 00"),
+    //                    (0x0F, "06 06 06 06"),
+    //                    (0x20, "00 00 00 00"),
+    //                    (0xAE, "03 03 03 03 03 03 03 03 03 03 03 03"),
+    //                    (0xB3, "05 06 05 06 06 06 04 04 06 05 06 05 05 06 05 04 04 04 04 04 04 04 04 04 06 05 04 05 04 04 04 04 04 04 04 04 04 04 04 04 04 04 04 04"),
+    //                    (0xC0, "01 01 01 01"),
+    //                    (0xDB, "06 06 06 06 06 06 06 06")
+    //                },
+    //                new List<(int, string)>
+    //                {
+    //                    (0x66B0, "9F 02 D9 11 CE 10 00 00 FF 47 F3 51 67 28 00 00 FF 47 17 14 08 10 00 00 FF 47 D9 11 CE 10 00 00 1F 31 15 00 0B 00 00 00 9F 02 DF 00 53 00 00 00 FF 47 3F 09 09 00 00 00 FE 63 12 7F E5 7D 00 00")
+    //                }
+    //            ));
+    //        //Egg
+    //        Add(new Dungeon(
+    //                new List<(int, string)>
+    //                {
+    //                    (0x0F, "07 07 07 07"),
+    //                    (0x1C, "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00")
+    //                },
+    //                new List<(int, string)>
+    //                {
+    //                    (0x6820, "FF 47 C4 26 21 15 00 00 FF 47 F3 51 67 28 00 00 FF 47 17 14 08 10 00 00 FF 47 D9 11 CE 10 00 00 96 66 B1 55 A9 38 00 00 67 39 C2 2C 0D 4A 00 00 FF 7F FF 7F FF 7F 00 00 87 7D 7C 2C 0F 00 08 08")
+    //                }
+    //            ));
+    //    }
+
+    //    public class Dungeon
+    //    {
+    //        public List<(int Value, int[] Details)> Tiles { get; set; }
+    //        public List<(int Offset, int[] Colours)> Palettes { get; set; }
+
+    //        public Dungeon(List<(int, string)> tiles, List<(int, string)> palettes)
+    //        {
+    //            foreach (var tile in tiles)
+    //                Tiles.Add((tile.Item1, tile.Item2.ToIntArray()));
+
+    //            foreach (var palette in palettes)
+    //                Palettes.Add((palette.Item1, palette.Item2.ToIntArray()));
+    //        }
+    //    }
+    //}
 }
