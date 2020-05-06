@@ -11,6 +11,18 @@ Warps with 2 addresses:
 - OW-0E entrance to D7 (need to add 0x247E6)
 	- Check if any other locked dungeons have two warp addresses
 
+Known Limitations:
+- ExtendedZoneAccess() only goes 1 zone deep
+- "Locked" warps can only connect to direct dead ends
+- There's nothing stopping softlocks without the sword
+
+Potential Issues:
+- Hookshot gap cave being a 1-way without the feather
+- Getting stuck in Zone 2 without the feather
+- There may be issues with D3
+- "OW1-13" may require special conditions (entrance to flame cave)
+- Can D2 still spawn behind D6 stairs?
+
 [x] Implement options support
 [x] Add option to include Marin's house
 [x] Add option to include the egg
@@ -33,31 +45,18 @@ Warps with 2 addresses:
 [ ] Add option to enable portals
 [ ] Randomize intrument warps with entrance warps (separate option or not?)
 [ ] Implement a settings bitmask
+[ ] Add option to create dungeon gauntlet ROM
 [ ] Add option to make ROMs always beatable
-	- Specific warps to figure out:
-		- D2 entrance
-		- Mamu's cave
-	[ ] Gather extra info for warps
-		[ ] Overworld warps (OW1)
-			[ ] Fill in warps I was unsure about
-		[x] Underworld warps (OW2)
-			[x] Fix connection constraints for new convention (FROM connection TO warp)
-		- Flag dead-end warps
-		- Flag warps that are "locked" (i.e. dungeon entrances)
-		- Determine constraints (physical or items) for dead-ends and discrete areas (less than ~3-4 warps?)
-		- Divide larger non-physically constrained overworld areas into "zones"
-			- Determine which items constrain each "zone"
+	[x] Gather all info for warps
 	[ ] Update the list of warps in WarpData
 	[x] Prevent physical dead ends from directly pairing, or along a physically constrained path
 	[x] Fixed Pathfind so that it actually followed through warps instead of getting stuck in the initial area
 	[x] Fixed Pathfind so that it (hopefully) won't get stuck in a loop if warps happen to loop
 	[ ] Implement methods to check specific criteria AFTER warps have been shuffled
 		[ ] If both Kanalet warps are dead-ends, then neither can be connected to 1st-floor Kanalet (wouldn't be able to open drawbridge)
-		[ ] Prevent dungeons from being constrained by their own dungeon item (use pathfinding)
-			- D2 can't be behind the D6 stairs (because L2 bracelet is needed to reach it)
+		[x] Prevent dungeons from being constrained by their own dungeon item (use pathfinding)
 		[ ] Somehow check zones in relation to dungeons (eg. D1 and D3 could both be confined to animal village)
-		[ ] Somehow pathfind for overworld keys and the warps they unlock
-	[ ] Solve the issue with "locked" warps
+	[x] Solve the issue with "locked" warps
 	[ ] Might want to make adjustments due to directionality of certain connections (i.e. richards villa, bombable cave walls, D8)
 	[ ] Prevent getting boxed in by bombable walls 
 		

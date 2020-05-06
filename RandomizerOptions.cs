@@ -5,20 +5,32 @@ using System.Windows.Forms;
 
 namespace LADXRandomizer
 {
-    public class RandomizerOptions
+    public class RandomizerOptions : List<Option>
     {
-        public OptionList List = new OptionList
+        public Option this[string name]
         {
-            new Option { Name = "SelectedROM", Type = typeof(ComboBox) },
-            new Option { Name = "IncludeMarinHouse" },
-            new Option { Name = "IncludeEgg" },
-            new Option { Name = "PreventDefaultWarps" },
-            new Option { Name = "PreventInaccessible" },
-        };
+            get { return this.First(w => w.Name == name); }
+        }
+
+        public RandomizerOptions()
+        {
+            this.AddRange(new List<Option>
+            {
+                new Option { Name = "SelectedROM", Type = typeof(ComboBox) },
+                new Option { Name = "IncludeMarinHouse" },
+                new Option { Name = "IncludeEgg" },
+                new Option { Name = "PreventDefaultWarps" },
+                new Option { Name = "PreventInaccessible" },
+                new Option { Name = "CoverPitWarp", ShowInLog = false, Enabled = true },
+                new Option { Name = "DebugMode", ShowInLog = false, Enabled = true },
+            });
+        }
     }
 
     public class Option
     {
+        public bool ShowInLog { get; set; } = true;
+
         public string Name { get; set; }
         public bool Enabled { get; set; } = false;
         public int Index { get; set; }
@@ -30,14 +42,6 @@ namespace LADXRandomizer
         J10,
         U10,
         U12
-    }
-
-    public class OptionList : List<Option>
-    {
-        public Option this[string name]
-        {
-            get { return this.First(w => w.Name == name); }
-        }
     }
 
     public class OptionsArgs : EventArgs

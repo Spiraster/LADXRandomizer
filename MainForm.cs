@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Reflection;
 using System.Windows.Forms;
 using static LADXRandomizer.IO.RandomizerIO;
@@ -10,8 +11,9 @@ namespace LADXRandomizer
         private Randomizer randomizer;
         private RandomizerLog log;
         private RandomizerOptions options;
-
         private Version version;
+
+        private Stopwatch stopwatch = new Stopwatch();
 
         private string Filename
         {
@@ -35,8 +37,10 @@ namespace LADXRandomizer
 
             randomizer = new Randomizer(txt_Seed.Text.Trim(' '), log, options);
 
+            stopwatch.Restart();
             randomizer.GenerateData();
-            log.Write(LogMode.Info, "", "DONE!", "<l1>");
+            stopwatch.Stop();
+            log.Write(LogMode.Info, "", "DONE! (" + stopwatch.ElapsedMilliseconds.ToString() + "ms)", "<l1>");
 
             log.LogSettings(options);
 

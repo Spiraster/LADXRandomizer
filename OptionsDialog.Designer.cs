@@ -55,9 +55,9 @@
             this.chk_IncludeMarinHouse.AutoSize = true;
             this.chk_IncludeMarinHouse.Location = new System.Drawing.Point(12, 37);
             this.chk_IncludeMarinHouse.Name = "chk_IncludeMarinHouse";
-            this.chk_IncludeMarinHouse.Size = new System.Drawing.Size(208, 17);
+            this.chk_IncludeMarinHouse.Size = new System.Drawing.Size(176, 17);
             this.chk_IncludeMarinHouse.TabIndex = 2;
-            this.chk_IncludeMarinHouse.Text = "Include Marin\'s house in randomization";
+            this.chk_IncludeMarinHouse.Text = "Randomize Marin/Tarin\'s house";
             this.chk_IncludeMarinHouse.UseVisualStyleBackColor = true;
             // 
             // chk_IncludeEgg
@@ -65,9 +65,9 @@
             this.chk_IncludeEgg.AutoSize = true;
             this.chk_IncludeEgg.Location = new System.Drawing.Point(12, 60);
             this.chk_IncludeEgg.Name = "chk_IncludeEgg";
-            this.chk_IncludeEgg.Size = new System.Drawing.Size(219, 17);
+            this.chk_IncludeEgg.Size = new System.Drawing.Size(176, 17);
             this.chk_IncludeEgg.TabIndex = 2;
-            this.chk_IncludeEgg.Text = "Include Wind Fish\'s Egg in randomization";
+            this.chk_IncludeEgg.Text = "Randomize the Wind Fish\'s Egg";
             this.chk_IncludeEgg.UseVisualStyleBackColor = true;
             // 
             // chk_PreventDefaultWarps

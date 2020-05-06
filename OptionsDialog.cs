@@ -16,7 +16,7 @@ namespace LADXRandomizer
             this.Left = x;
             this.cmb_SelectedROM.SelectedIndex = 0;
 
-            foreach (var option in options.List)
+            foreach (var option in options)
             {
                 CheckBox checkbox = null;
                 if (GetCheckBox(option.Name, ref checkbox))
@@ -32,7 +32,7 @@ namespace LADXRandomizer
         {
             var options = new RandomizerOptions();
 
-            foreach (var option in options.List)
+            foreach (var option in options)
             {
                 CheckBox checkbox = null;
                 if (GetCheckBox(option.Name, ref checkbox))

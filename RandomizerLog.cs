@@ -57,10 +57,12 @@ namespace LADXRandomizer
         public void LogSettings(RandomizerOptions options)
         {
             Write(LogMode.Settings, "<l2>", "Settings:", "<l2>");
-            Write(LogMode.Settings, options.List["SelectedROM"].Name + " = " + (Rom)options.List["SelectedROM"].Index);
-            foreach (var option in options.List)
+            Write(LogMode.Settings, options["SelectedROM"].Name + " = " + (Rom)options["SelectedROM"].Index);
+            foreach (var option in options)
             {
-                if (option.Type == typeof(bool))
+                if (!option.ShowInLog && !debug)
+                    continue;
+                else if (option.Type == typeof(bool))
                     Write(LogMode.Settings, option.Name + " = " + option.Enabled.ToString().ToUpper());
             }
         }

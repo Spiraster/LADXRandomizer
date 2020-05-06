@@ -19,7 +19,7 @@ namespace LADXRandomizer.IO
 
             string file = "Output\\LADX " + filename + ".gbc";
 
-            int selectedROM = options.List["SelectedROM"].Index;
+            int selectedROM = options["SelectedROM"].Index;
 
             byte[] rom = Resources.romJ10;
             if (selectedROM == (int)Rom.U10)
@@ -35,6 +35,7 @@ namespace LADXRandomizer.IO
             {
                 output.Write(rom, 0, 1048576);
 
+                //write the updated warps
                 foreach (var warp in warps)
                 {
                     var data = new List<byte>(BitConverter.GetBytes(warp.Destination).Reverse());
@@ -50,7 +51,20 @@ namespace LADXRandomizer.IO
                     }
                 }
 
-                //write header//
+                //cover tal tal heights pit warp
+                if (options["CoverPitWarp"].Enabled)
+                {
+                    output.Seek(0x24D74, SeekOrigin.Begin);
+                    output.Write(BitConverter.GetBytes(0x03), 0, 1);
+                }
+
+                if (options["DebugMode"].Enabled)
+                {
+                    output.Seek(0x03, SeekOrigin.Begin);
+                    output.Write(BitConverter.GetBytes(0x01), 0, 1);
+                }
+
+                //write header
                 byte checksum = 0xAD;
                 if (selectedROM == (int)Rom.U10)
                     checksum = 0xAC;
@@ -88,7 +102,7 @@ namespace LADXRandomizer.IO
                 doc.Load("settings.xml");
                 var settings = doc["settings"];
 
-                foreach (var option in options.List)
+                foreach (var option in options)
                 {
                     if (settings[option.Name] != null)
                     {
@@ -118,7 +132,7 @@ namespace LADXRandomizer.IO
 
             doc.AppendChild(settings);
 
-            foreach (var option in options.List)
+            foreach (var option in options)
             {
                 if (option.Type == typeof(ComboBox))
                     settings.AppendChild(ToElement(doc, option.Name, option.Index));
