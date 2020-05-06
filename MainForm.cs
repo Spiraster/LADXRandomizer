@@ -12,7 +12,7 @@ namespace LADXRandomizer
 {
     public partial class MainForm : Form
     {
-        private bool debug = false;
+        private bool debug = true;
 
         private Randomizer randomizer;
         private RandomizerLog log;
@@ -43,6 +43,11 @@ namespace LADXRandomizer
             log.UpdateLog += log_onUpdateLog;
 
             var settings = new RandomizerSettings(mask);
+
+            //var pathfinder = new Pathfinding.Pathfinder();
+            //var warpdata = new WarpData(new RandomizerSettings(385));
+            //warpdata.ForEach(x => x.Destination = x.Default);
+            //txt_Log.SynchronizedInvoke(() => txt_Log.Text = pathfinder.IsSolvable(warpdata).ToString() + " (count = " + pathfinder.FinalCount.ToString() + ")" + "\r\n\r\n" + pathfinder.Result);
 
             randomizer = new Randomizer(txt_Seed.Text.Trim(' '), log, settings);
 

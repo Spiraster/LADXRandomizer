@@ -34,8 +34,8 @@
             this.btn_Import = new System.Windows.Forms.Button();
             this.cmb_SelectedROM = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.chk_IncludeMarinHouse = new System.Windows.Forms.CheckBox();
-            this.chk_IncludeEgg = new System.Windows.Forms.CheckBox();
+            this.chk_ExcludeMarinHouse = new System.Windows.Forms.CheckBox();
+            this.chk_ExcludeEgg = new System.Windows.Forms.CheckBox();
             this.chk_PreventDefaultWarps = new System.Windows.Forms.CheckBox();
             this.chk_PreventInaccessible = new System.Windows.Forms.CheckBox();
             this.chk_CheckSolvability = new System.Windows.Forms.CheckBox();
@@ -98,27 +98,27 @@
             this.label1.TabIndex = 4;
             this.label1.Text = "Select ROM to use:";
             // 
-            // chk_IncludeMarinHouse
+            // chk_ExcludeMarinHouse
             // 
-            this.chk_IncludeMarinHouse.AutoSize = true;
-            this.chk_IncludeMarinHouse.Location = new System.Drawing.Point(12, 127);
-            this.chk_IncludeMarinHouse.Name = "chk_IncludeMarinHouse";
-            this.chk_IncludeMarinHouse.Size = new System.Drawing.Size(176, 17);
-            this.chk_IncludeMarinHouse.TabIndex = 2;
-            this.chk_IncludeMarinHouse.Text = "Randomize Marin/Tarin\'s house";
-            this.chk_IncludeMarinHouse.UseVisualStyleBackColor = true;
-            this.chk_IncludeMarinHouse.Click += new System.EventHandler(this.chk_Click);
+            this.chk_ExcludeMarinHouse.AutoSize = true;
+            this.chk_ExcludeMarinHouse.Location = new System.Drawing.Point(12, 127);
+            this.chk_ExcludeMarinHouse.Name = "chk_ExcludeMarinHouse";
+            this.chk_ExcludeMarinHouse.Size = new System.Drawing.Size(161, 17);
+            this.chk_ExcludeMarinHouse.TabIndex = 2;
+            this.chk_ExcludeMarinHouse.Text = "Exclude Marin/Tarin\'s house";
+            this.chk_ExcludeMarinHouse.UseVisualStyleBackColor = true;
+            this.chk_ExcludeMarinHouse.Click += new System.EventHandler(this.chk_Click);
             // 
-            // chk_IncludeEgg
+            // chk_ExcludeEgg
             // 
-            this.chk_IncludeEgg.AutoSize = true;
-            this.chk_IncludeEgg.Location = new System.Drawing.Point(12, 150);
-            this.chk_IncludeEgg.Name = "chk_IncludeEgg";
-            this.chk_IncludeEgg.Size = new System.Drawing.Size(176, 17);
-            this.chk_IncludeEgg.TabIndex = 2;
-            this.chk_IncludeEgg.Text = "Randomize the Wind Fish\'s Egg";
-            this.chk_IncludeEgg.UseVisualStyleBackColor = true;
-            this.chk_IncludeEgg.Click += new System.EventHandler(this.chk_Click);
+            this.chk_ExcludeEgg.AutoSize = true;
+            this.chk_ExcludeEgg.Location = new System.Drawing.Point(12, 150);
+            this.chk_ExcludeEgg.Name = "chk_ExcludeEgg";
+            this.chk_ExcludeEgg.Size = new System.Drawing.Size(161, 17);
+            this.chk_ExcludeEgg.TabIndex = 2;
+            this.chk_ExcludeEgg.Text = "Exclude the Wind Fish\'s Egg";
+            this.chk_ExcludeEgg.UseVisualStyleBackColor = true;
+            this.chk_ExcludeEgg.Click += new System.EventHandler(this.chk_Click);
             // 
             // chk_PreventDefaultWarps
             // 
@@ -171,11 +171,11 @@
             this.ClientSize = new System.Drawing.Size(293, 216);
             this.ControlBox = false;
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.chk_IncludeMarinHouse);
+            this.Controls.Add(this.chk_ExcludeMarinHouse);
             this.Controls.Add(this.btn_Import);
             this.Controls.Add(this.cmb_SelectedROM);
             this.Controls.Add(this.chk_PairWarps);
-            this.Controls.Add(this.chk_IncludeEgg);
+            this.Controls.Add(this.chk_ExcludeEgg);
             this.Controls.Add(this.btn_Cancel);
             this.Controls.Add(this.chk_CheckSolvability);
             this.Controls.Add(this.btn_OK);
@@ -198,8 +198,8 @@
         private System.Windows.Forms.Button btn_Import;
         private System.Windows.Forms.ComboBox cmb_SelectedROM;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.CheckBox chk_IncludeMarinHouse;
-        private System.Windows.Forms.CheckBox chk_IncludeEgg;
+        private System.Windows.Forms.CheckBox chk_ExcludeMarinHouse;
+        private System.Windows.Forms.CheckBox chk_ExcludeEgg;
         private System.Windows.Forms.CheckBox chk_PreventDefaultWarps;
         private System.Windows.Forms.CheckBox chk_PreventInaccessible;
         private System.Windows.Forms.CheckBox chk_CheckSolvability;

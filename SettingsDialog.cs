@@ -108,18 +108,18 @@ namespace LADXRandomizer
                 chk_PreventInaccessible.Checked = true;
                 chk_PreventInaccessible.Enabled = false;
 
-                chk_IncludeMarinHouse.Checked = false;
-                chk_IncludeMarinHouse.Enabled = false;
+                chk_ExcludeMarinHouse.Checked = false;
+                chk_ExcludeMarinHouse.Enabled = false;
 
-                chk_IncludeEgg.Checked = false;
-                chk_IncludeEgg.Enabled = false;
+                chk_ExcludeEgg.Checked = false;
+                chk_ExcludeEgg.Enabled = false;
             }
             else
             {
                 chk_PairWarps.Enabled = true;
                 chk_PreventInaccessible.Enabled = true;
-                chk_IncludeMarinHouse.Enabled = true;
-                chk_IncludeEgg.Enabled = true;
+                chk_ExcludeMarinHouse.Enabled = true;
+                chk_ExcludeEgg.Enabled = true;
             }
         }
 

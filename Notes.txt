@@ -11,6 +11,7 @@ Known Limitations:
 - 'Locked' warps are only allowed to connect to direct dead ends
 - There's nothing stopping softlocks without the sword
 - D6 and D8 are probably less likely to spawn behind a 'locked' warp than they could be
+- Nothing prevents D6 or D7 keys from getting placed behind their respectice doors (although this isn't really an issue)
 
 Potential Issues:
 - 1-ways can lead to softlock situations
@@ -28,16 +29,16 @@ Potential Issues:
 [ ] Fix ValidPairing and CheckLocked to not make assumptions about the passed warps
 [x] Randomize intrument warps with entrance warps (add as Address2)
 [ ] Make logic adjustments
-	[ ] Powder is necessary for the raccoon bomb trigger
 	[ ] S+Q takes you to dungeon entrance (fix D6 and D8)
 	[ ] D4 cave entrance was not connected to a dead end
 	[ ] Treat one-ways as their own thing (otherwise we get issues with locked warps)
 	[ ] Account for warp under stone in Left TalTal (make Zone 2 always accessible?)
 	[ ] Add considerations for the ghost (don't spawn "house by the bay" behind D5 or southern face shrine)
 [ ] Update checks to accomodate unpaired warps
-	[ ] Replace GetPair with GetDestinationWarp & GetOriginWarp
+	[x] Replace GetPair with GetDestinationWarp & GetOriginWarp
 	[ ] Update ValidPairing for the case of unpaired ROMs (a dead end could connect to another dead end provided the first is accessible and the second doesn't exit to a dead end)
 	[ ] Update CheckLocked
+	[ ] Update CreateNewPair
 	
 [ ] Add chest randomization
 

@@ -26,8 +26,8 @@ namespace LADXRandomizer
                 new Setting { Name = "PairWarps" },
                 new Setting { Name = "PreventInaccessible" },
                 new Setting { Name = "PreventDefaultWarps" },
-                new Setting { Name = "IncludeMarinHouse" },
-                new Setting { Name = "IncludeEgg" },
+                new Setting { Name = "ExcludeMarinHouse" },
+                new Setting { Name = "ExcludeEgg" },
 
                 new Setting { Name = "CoverPitWarp", ShowInLog = false, Enabled = true },
                 new Setting { Name = "DebugMode", ShowInLog = false, Enabled = true },
@@ -72,14 +72,14 @@ namespace LADXRandomizer
         PairWarps           = 16,
         PreventInaccessible = 32,
         PreventDefaultWarps = 64,
-        IncludeMarinHouse   = 128,
-        IncludeEgg          = 256,
+        ExcludeMarinHouse   = 128,
+        ExcludeEgg          = 256,
     }
 
     public enum Preset
     {
-        Standard = 57,
-        //Hard     = 41,
+        Standard = 441,
+        //Hard     = xx,
         Chaos    = 385,
     }
 
