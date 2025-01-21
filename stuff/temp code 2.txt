@@ -1,0 +1,41 @@
+(new preceding code @ 3E:4000)
+7C FE D4 CA 08 40 E9
+
+(@ 0:3532)
+0B		    dec bc
+0A	    	ld a,(bc)
+5F	    	ld e,a
+21 22 40	ld hl,4022
+CD F5 3F	call 3FF5
+CD 05 35	call 3505
+03	    	inc bc
+
+(@ 3E:4022)
+21 11 D7	ld hl,D711
+19	    	add hl,de
+F1	    	pop af
+77	    	ld (hl),a
+
+F5	    	push af
+
+FA A5 DB	ld a,(DBA5)
+A7	    	and a
+20 0E		jr nz,xx    	;jump if in underworld
+F0 F6		ld a,(ff00+F6)
+FE 80		cp a,80
+30 04		jr nc,xx	    ;jump if 2nd half of OW
+3E 09		ld a,09
+18 10		jr xx
+3E 1A		ld a,1A
+18 0C		jr xx
+F0 F7		ld a,(ff00+F7)
+FE 06		cp a,06
+30 04		jr nc,xx	    ;jump if UW2
+3E 0A		ld a,0A
+18 02		jr xx
+3E 0B		ld a,0B
+C3 21 08	jp 0821
+
+
+
+

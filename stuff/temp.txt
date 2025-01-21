@@ -1,0 +1,4 @@
+~0:3464 - where the chest tile gets replaced
+	- i want to save the location of the chest here
+
+2:5EEB - chest event code (where it loads 28 as the location)
